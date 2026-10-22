@@ -1,0 +1,5 @@
+# Baseline and test dependencies (runnable now).
+# Backend/frontend dependencies will be added with those components.
+opencv-python-headless>=4.8
+numpy>=1.24
+pytest>=8.0

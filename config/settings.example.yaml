@@ -1,0 +1,26 @@
+# Example analysis configuration. Values are starting points to be tuned
+# during evaluation (see docs/09-verification-plan.md).
+
+analysis:
+  detector:
+    backend: yolo            # yolo | mog2 (baseline)
+    confidence: 0.35
+    classes: [person, car, bicycle, motorcycle, bus, truck]
+  tracker:
+    type: bytetrack          # bytetrack | botsort
+    max_lost_frames: 30
+  motion_filter:
+    min_displacement_px: 25  # object counts as "moving" if it travels at least this far
+    window_frames: 15        # ...within this many frames
+  extraction:
+    save_crops: true
+    save_clips: true
+    clip_padding_seconds: 1.0
+    max_crops_per_track: 5
+
+baseline_mog2:
+  history: 500
+  var_threshold: 16
+  detect_shadows: true
+  min_area_px: 400
+  max_match_distance_px: 60

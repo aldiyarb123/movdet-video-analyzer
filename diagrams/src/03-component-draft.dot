@@ -1,0 +1,68 @@
+// Component diagram (draft). Render: dot -Tsvg 03-component-draft.dot -o ../export/03-component-draft.svg
+digraph components {
+  graph [rankdir=LR, fontname="Helvetica", fontsize=14, labelloc=t, pad=0.4, nodesep=0.4, ranksep=0.9,
+         label="Component Diagram (draft): MotionScope", bgcolor="white", compound=true];
+  node  [fontname="Helvetica", fontsize=11, shape=box, style="filled,rounded", penwidth=1.1];
+  edge  [fontname="Helvetica", fontsize=9, color="#475569", fontcolor="#475569"];
+
+  user [label="Browser", shape=box, style=filled, fillcolor="#e0f2fe", color="#0369a1"];
+
+  subgraph cluster_fe {
+    label="Frontend (React + TypeScript)"; style="rounded,filled"; fillcolor="#f0f9ff"; color="#0369a1"; fontcolor="#0369a1";
+    fe_up   [label="Upload + settings view", fillcolor="white", color="#0369a1"];
+    fe_view [label="Results viewer\n(video + canvas overlay)", fillcolor="white", color="#0369a1"];
+    fe_hist [label="History view", fillcolor="white", color="#0369a1"];
+    fe_api  [label="API client + SSE listener", fillcolor="white", color="#0369a1"];
+  }
+
+  subgraph cluster_be {
+    label="Backend API (FastAPI)"; style="rounded,filled"; fillcolor="#eff6ff"; color="#1d4ed8"; fontcolor="#1d4ed8";
+    be_up   [label="Upload + validation", fillcolor="white", color="#1d4ed8"];
+    be_jobs [label="Jobs service\n(create, status, cancel)", fillcolor="white", color="#1d4ed8"];
+    be_rep  [label="Results + export service\n(JSON, CSV, crops, clips)", fillcolor="white", color="#1d4ed8"];
+    be_sse  [label="Progress stream (SSE)", fillcolor="white", color="#1d4ed8"];
+  }
+
+  queue [label="Redis\njob queue + progress", shape=cylinder, fillcolor="#fee2e2", color="#b91c1c"];
+
+  subgraph cluster_w {
+    label="Vision worker (Python)"; style="rounded,filled"; fillcolor="#f0fdf4"; color="#15803d"; fontcolor="#15803d";
+    w_dec  [label="Video decoder", fillcolor="white", color="#15803d"];
+    w_det  [label="Detector\n(YOLO)", fillcolor="white", color="#15803d"];
+    w_trk  [label="Tracker\n(ByteTrack)", fillcolor="white", color="#15803d"];
+    w_mot  [label="Motion filter\n(displacement criterion)", fillcolor="white", color="#15803d"];
+    w_ext  [label="Extractor\n(crops, clips, report)", fillcolor="white", color="#15803d"];
+  }
+
+  db    [label="PostgreSQL\njobs, tracks, settings", shape=cylinder, fillcolor="#f1f5f9", color="#64748b"];
+  files [label="File storage\nvideos, crops, clips", shape=cylinder, fillcolor="#f1f5f9", color="#64748b"];
+
+  subgraph cluster_ev {
+    label="Evaluation tool (CLI)"; style="rounded,dashed"; color="#b45309"; fontcolor="#b45309";
+    ev_base [label="Baseline B0\n(OpenCV MOG2)", fillcolor="#fef3c7", color="#b45309"];
+    ev_met  [label="Metrics\n(F1, IDF1, FPS)", fillcolor="#fef3c7", color="#b45309"];
+  }
+
+  user -> fe_up; user -> fe_view; user -> fe_hist;
+  fe_up -> fe_api; fe_view -> fe_api; fe_hist -> fe_api;
+  fe_api -> be_up   [label="REST"];
+  fe_api -> be_jobs [label="REST"];
+  fe_api -> be_rep  [label="REST"];
+  be_sse -> fe_api  [label="events", style=dashed];
+
+  be_up   -> files;
+  be_jobs -> db;
+  be_jobs -> queue  [label="enqueue"];
+  be_rep  -> db; be_rep -> files;
+  queue -> be_sse   [style=dashed, label="progress"];
+
+  queue -> w_dec    [label="job"];
+  w_dec -> w_det -> w_trk -> w_mot -> w_ext;
+  w_dec -> files    [dir=back, label="read video"];
+  w_ext -> files    [label="write results"];
+  w_ext -> db       [label="write tracks"];
+  w_ext -> queue    [label="progress", style=dashed];
+
+  ev_base -> ev_met;
+  w_mot -> ev_met   [style=dashed, label="system output"];
+}

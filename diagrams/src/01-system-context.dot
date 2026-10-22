@@ -1,0 +1,26 @@
+// System context diagram. Render: dot -Tsvg 01-system-context.dot -o ../export/01-system-context.svg
+digraph context {
+  graph [rankdir=LR, fontname="Helvetica", fontsize=14, labelloc=t, pad=0.4, nodesep=0.7, ranksep=1.3,
+         label="System Context: MotionScope", bgcolor="white"];
+  node  [fontname="Helvetica", fontsize=12, style="filled,rounded", shape=box, penwidth=1.2];
+  edge  [fontname="Helvetica", fontsize=10, color="#475569", fontcolor="#334155"];
+
+  analyst [label="Analyst / Researcher\n(uses the web UI)", shape=box, fillcolor="#e0f2fe", color="#0369a1"];
+  dev     [label="Team / Supervisor\n(runs evaluation, reviews)", fillcolor="#e0f2fe", color="#0369a1"];
+
+  system [label=<<B>MotionScope</B><BR/>detects, tracks and extracts<BR/>moving objects from video>,
+          shape=box, fillcolor="#1d4ed8", fontcolor="white", color="#1e3a8a", width=3, height=1.4, fontsize=14];
+
+  files   [label="Video files\n(local disk)", shape=cylinder, fillcolor="#f1f5f9", color="#64748b"];
+  rtsp    [label="IP camera stream (RTSP)\nOPTIONAL / later", style="filled,rounded,dashed", fillcolor="#f8fafc", color="#94a3b8"];
+  weights [label="Pre-trained model weights\n(downloaded once at install)", fillcolor="#fef3c7", color="#b45309"];
+  bench   [label="Public benchmarks\nCDnet 2014, MOTChallenge\n(evaluation only)", fillcolor="#fef3c7", color="#b45309"];
+
+  analyst -> system [label="uploads video, sets options,\nviews results, exports"];
+  system  -> analyst [label="overlays, object list,\ncrops, clips, JSON/CSV"];
+  dev     -> system [label="evaluation runs,\ncode review"];
+  files   -> system [label="video input"];
+  rtsp    -> system [label="live frames", style=dashed];
+  weights -> system [label="model files", style=dashed];
+  bench   -> system [label="test data", style=dashed];
+}

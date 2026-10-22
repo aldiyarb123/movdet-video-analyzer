@@ -1,0 +1,45 @@
+// Use case diagram (Graphviz rendering of UML use cases). Render: dot -Tsvg 02-use-case.dot -o ../export/02-use-case.svg
+digraph usecase {
+  graph [rankdir=LR, fontname="Helvetica", fontsize=14, labelloc=t, pad=0.4, nodesep=0.35, ranksep=1.6,
+         label="Use Case Diagram: MotionScope", bgcolor="white", compound=true];
+  node  [fontname="Helvetica", fontsize=11];
+  edge  [fontname="Helvetica", fontsize=9, color="#475569", fontcolor="#475569"];
+
+  analyst [label="Analyst", shape=box, style="filled", fillcolor="#e0f2fe", color="#0369a1", width=1.2, height=0.7];
+  dev     [label="Team member /\nEvaluator", shape=box, style="filled", fillcolor="#e0f2fe", color="#0369a1", width=1.2, height=0.7];
+
+  subgraph cluster_sys {
+    label="MotionScope"; style="rounded"; color="#1d4ed8"; fontcolor="#1d4ed8"; fontsize=13;
+    node [shape=ellipse, style=filled, fillcolor="#eff6ff", color="#1d4ed8"];
+
+    uc_upload  [label="UC1 Upload video"];
+    uc_conf    [label="UC2 Configure analysis"];
+    uc_start   [label="UC3 Start analysis"];
+    uc_prog    [label="UC4 Watch job progress"];
+    uc_cancel  [label="UC5 Cancel job"];
+    uc_view    [label="UC6 View results\nwith overlays"];
+    uc_filter  [label="UC7 Filter objects\nand timeline"];
+    uc_crop    [label="UC8 Get crops and clips"];
+    uc_export  [label="UC9 Export JSON / CSV"];
+    uc_hist    [label="UC10 Browse job history"];
+    uc_del     [label="UC11 Delete job"];
+    uc_eval    [label="UC12 Run evaluation\n(baseline vs system)", fillcolor="#fef3c7", color="#b45309"];
+  }
+
+  analyst -> uc_upload;
+  analyst -> uc_start;
+  analyst -> uc_prog;
+  analyst -> uc_cancel;
+  analyst -> uc_view;
+  analyst -> uc_crop;
+  analyst -> uc_export;
+  analyst -> uc_hist;
+  analyst -> uc_del;
+  dev     -> uc_eval;
+
+  uc_start  -> uc_upload [label="<<include>>", style=dashed];
+  uc_start  -> uc_conf   [label="<<include>>", style=dashed];
+  uc_filter -> uc_view   [label="<<extend>>", style=dashed, dir=back, arrowtail=none];
+  uc_crop   -> uc_view   [label="<<extend>>", style=dashed];
+  uc_del    -> uc_hist   [label="<<extend>>", style=dashed];
+}

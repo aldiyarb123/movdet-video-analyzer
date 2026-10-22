@@ -1,0 +1,41 @@
+# Secrets and local config
+.env
+*.pem
+*.key
+config/*.local.yaml
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+*.egg-info/
+
+# Node / frontend
+node_modules/
+dist/
+.vite/
+
+# Data and outputs (never commit real videos or personal data)
+data/
+out/
+uploads/
+*.mp4
+*.avi
+*.mov
+*.mkv
+!tests/fixtures/*.mp4
+
+# Model weights
+*.pt
+*.onnx
+*.engine
+
+# OS / IDE
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
