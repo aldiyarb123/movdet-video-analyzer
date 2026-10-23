@@ -1,102 +1,257 @@
+
 <!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>MotionScope Prototype</title>
+<title>MotionScope — UI Prototype</title>
 <style>
-:root{
-  --bg:#f4f6fb; --panel:#ffffff; --ink:#0f172a; --muted:#64748b; --line:#e2e8f0;
-  --brand:#2563eb; --brand-ink:#ffffff; --soft:#eaf1ff; --ok:#16a34a; --warn:#d97706; --bad:#dc2626;
+:root {
+  --bg:#f4f6fb;
+  --panel:#fff;
+  --ink:#0f172a;
+  --muted:#64748b;
+  --line:#e2e8f0;
+  --brand:#2563eb;
+  --brand-ink:#fff;
+  --soft:#eaf1ff;
+  --ok:#16a34a;
+  --bad:#dc2626;
   --scene:#1e293b;
 }
-@media (prefers-color-scheme: dark){
-  :root{--bg:#0b1220; --panel:#111a2e; --ink:#e5ebf7; --muted:#93a1ba; --line:#22304d; --soft:#16264a; --scene:#0a0f1c;}
+@media(prefers-color-scheme:dark) {
+  :root {
+    --bg:#0b1220;
+    --panel:#111a2e;
+    --ink:#e5ebf7;
+    --muted:#93a1ba;
+    --line:#22304d;
+    --soft:#16264a;
+    --scene:#0a0f1c;
+  }
 }
-*{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
-header{display:flex;align-items:center;gap:20px;padding:12px 24px;background:var(--panel);border-bottom:1px solid var(--line);flex-wrap:wrap}
-.logo{font-weight:700;font-size:18px;display:flex;align-items:center;gap:8px}
-.logo i{width:22px;height:22px;border-radius:7px;background:var(--brand);display:inline-block;position:relative}
-.logo i:after{content:"";position:absolute;inset:6px;border:2px solid #fff;border-radius:3px}
-nav{display:flex;gap:4px;flex-wrap:wrap}
-nav button{border:0;background:none;color:var(--muted);padding:8px 14px;border-radius:10px;font:inherit;cursor:pointer}
-nav button[aria-current=true]{background:var(--soft);color:var(--brand);font-weight:600}
-.tag{margin-left:auto;font-size:12px;color:var(--muted);border:1px dashed var(--line);padding:4px 10px;border-radius:99px}
-main{max-width:1180px;margin:0 auto;padding:24px 16px 48px}
-section{display:none} section.on{display:block}
-h1{font-size:22px;margin:0 0 4px} p.sub{margin:0 0 20px;color:var(--muted)}
-.grid{display:grid;grid-template-columns:1.2fr 1fr;gap:20px}
-@media(max-width:860px){.grid{grid-template-columns:1fr}}
-.card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:20px}
-.drop{border:2px dashed var(--line);border-radius:14px;padding:44px 16px;text-align:center;color:var(--muted);cursor:pointer;transition:.15s}
-.drop:hover,.drop.has{border-color:var(--brand);background:var(--soft);color:var(--ink)}
-.drop b{display:block;color:var(--ink);font-size:16px;margin-bottom:4px}
-label{display:block;font-weight:600;margin:14px 0 6px;font-size:13px}
-.chips{display:flex;flex-wrap:wrap;gap:8px}
-.chip{border:1px solid var(--line);background:var(--panel);color:var(--ink);padding:6px 12px;border-radius:99px;cursor:pointer;font:inherit;font-size:13px}
-.chip[aria-pressed=true]{background:var(--brand);color:var(--brand-ink);border-color:var(--brand)}
-input[type=range]{width:100%;accent-color:var(--brand)}
-select{width:100%;padding:9px 10px;border-radius:10px;border:1px solid var(--line);background:var(--panel);color:var(--ink);font:inherit}
-.row{display:flex;justify-content:space-between;color:var(--muted);font-size:13px}
-.btn{border:0;background:var(--brand);color:var(--brand-ink);padding:11px 18px;border-radius:12px;font:inherit;font-weight:600;cursor:pointer}
-.btn.ghost{background:var(--soft);color:var(--brand)}
-.btn:disabled{opacity:.45;cursor:not-allowed}
-.bar{height:10px;border-radius:99px;background:var(--line);overflow:hidden}
-.bar>div{height:100%;width:0;background:var(--brand);transition:width .25s}
-.steps{list-style:none;padding:0;margin:18px 0 0;display:grid;gap:10px}
-.steps li{display:flex;gap:10px;align-items:center;color:var(--muted)}
-.steps li:before{content:"";width:12px;height:12px;border-radius:50%;border:2px solid var(--line)}
-.steps li.done{color:var(--ink)} .steps li.done:before{background:var(--ok);border-color:var(--ok)}
-.steps li.now{color:var(--ink);font-weight:600} .steps li.now:before{border-color:var(--brand);background:var(--soft)}
-.viewer{display:grid;grid-template-columns:1.6fr 1fr;gap:20px}
-@media(max-width:900px){.viewer{grid-template-columns:1fr}}
-canvas{width:100%;border-radius:14px;background:var(--scene);display:block}
-.ctrl{display:flex;gap:10px;align-items:center;margin-top:10px}
-.ctrl input{flex:1}
-.timeline{position:relative;height:56px;margin-top:10px;background:var(--bg);border-radius:10px;border:1px solid var(--line);overflow:hidden}
-.timeline span{position:absolute;height:10px;border-radius:5px;opacity:.9}
-.timeline .head{position:absolute;top:0;bottom:0;width:2px;background:var(--bad)}
-.list{display:grid;gap:8px;max-height:430px;overflow:auto;margin-top:10px}
-.obj{display:flex;gap:12px;align-items:center;padding:10px;border:1px solid var(--line);border-radius:12px;cursor:pointer;background:var(--panel);text-align:left;font:inherit;color:inherit;width:100%}
-.obj[aria-selected=true]{border-color:var(--brand);background:var(--soft)}
-.sw{width:12px;height:12px;border-radius:4px;flex:none}
-.obj small{color:var(--muted);display:block}
-.pill{margin-left:auto;font-size:11px;padding:2px 8px;border-radius:99px;border:1px solid var(--line);color:var(--muted)}
-.pill.mv{color:var(--ok);border-color:var(--ok)}
-table{width:100%;border-collapse:collapse}
-th,td{text-align:left;padding:11px 8px;border-bottom:1px solid var(--line);font-size:14px}
-th{color:var(--muted);font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.04em}
-.st{padding:2px 9px;border-radius:99px;font-size:12px}
-.st.done{background:#dcfce7;color:#166534}.st.run{background:#dbeafe;color:#1e40af}.st.fail{background:#fee2e2;color:#991b1b}
-.toolbar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;align-items:center}
-.note{font-size:12px;color:var(--muted);margin-top:18px}
+* {box-sizing:border-box}
+body {
+  margin:0;
+  background:var(--bg);
+  color:var(--ink);
+  font:15px/1.45 system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+header {
+  display:flex;
+  align-items:center;
+  gap:20px;
+  padding:12px 24px;
+  background:var(--panel);
+  border-bottom:1px solid var(--line);
+  flex-wrap:wrap;
+}
+.logo {font-size:18px;font-weight:700}
+nav {display:flex;gap:4px;flex-wrap:wrap}
+nav button {
+  border:0;
+  background:none;
+  color:var(--muted);
+  padding:8px 14px;
+  border-radius:10px;
+  font:inherit;
+  cursor:pointer;
+}
+nav button[aria-current="true"] {
+  background:var(--soft);
+  color:var(--brand);
+  font-weight:600;
+}
+.tag {
+  margin-left:auto;
+  font-size:12px;
+  color:var(--muted);
+  border:1px dashed var(--line);
+  border-radius:99px;
+  padding:5px 10px;
+}
+main {max-width:1180px;margin:auto;padding:24px 16px 48px}
+section {display:none}
+section.on {display:block}
+h1 {font-size:23px;margin:0 0 5px}
+.sub {color:var(--muted);margin:0 0 20px}
+.grid {display:grid;grid-template-columns:1.2fr 1fr;gap:20px}
+.card {
+  background:var(--panel);
+  padding:20px;
+  border:1px solid var(--line);
+  border-radius:16px;
+}
+.drop {
+  border:2px dashed var(--line);
+  border-radius:14px;
+  padding:44px 16px;
+  text-align:center;
+  color:var(--muted);
+  cursor:pointer;
+}
+.drop:hover,.drop.has,.drop.dragover {
+  border-color:var(--brand);
+  background:var(--soft);
+}
+.drop b {display:block;color:var(--ink);font-size:16px}
+label {display:block;font-weight:600;margin:14px 0 6px}
+.chips {display:flex;flex-wrap:wrap;gap:8px}
+.chip {
+  border:1px solid var(--line);
+  background:var(--panel);
+  color:var(--ink);
+  padding:7px 12px;
+  border-radius:99px;
+  font:inherit;
+  cursor:pointer;
+}
+.chip[aria-pressed="true"] {
+  background:var(--brand);
+  color:white;
+  border-color:var(--brand);
+}
+input[type=range] {width:100%;accent-color:var(--brand)}
+select {
+  width:100%;
+  padding:10px;
+  background:var(--panel);
+  color:var(--ink);
+  border:1px solid var(--line);
+  border-radius:10px;
+}
+.row {display:flex;justify-content:space-between;gap:8px;color:var(--muted);font-size:13px}
+.btn {
+  border:0;
+  background:var(--brand);
+  color:var(--brand-ink);
+  padding:11px 18px;
+  border-radius:12px;
+  font:inherit;
+  font-weight:600;
+  cursor:pointer;
+}
+.btn.ghost {background:var(--soft);color:var(--brand)}
+.btn:disabled {opacity:.45;cursor:not-allowed}
+.note {font-size:12px;color:var(--muted);margin-top:18px}
+.error {color:var(--bad);font-size:13px}
+.bar {
+  height:10px;
+  background:var(--line);
+  border-radius:99px;
+  overflow:hidden;
+}
+.bar>div {
+  width:0;
+  height:100%;
+  background:var(--brand);
+  transition:width .2s;
+}
+.steps {list-style:none;padding:0;display:grid;gap:10px}
+.steps li {color:var(--muted);padding-left:20px}
+.steps li:before {content:"○ ";margin-left:-20px}
+.steps li.done {color:var(--ok)}
+.steps li.done:before {content:"✓ "}
+.steps li.now {color:var(--brand);font-weight:600}
+.viewer {display:grid;grid-template-columns:1.6fr 1fr;gap:20px}
+canvas {
+  width:100%;
+  display:block;
+  background:var(--scene);
+  border-radius:14px;
+}
+.ctrl {display:flex;gap:10px;align-items:center;margin-top:10px}
+.ctrl input {flex:1}
+.timeline {
+  position:relative;
+  height:65px;
+  margin-top:10px;
+  background:var(--bg);
+  border:1px solid var(--line);
+  border-radius:10px;
+  overflow:hidden;
+}
+.timeline span {position:absolute;border-radius:4px}
+.timeline .head {
+  position:absolute;
+  top:0;
+  bottom:0;
+  width:2px;
+  background:var(--bad);
+}
+.toolbar {display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.list {display:grid;gap:8px;max-height:420px;overflow:auto}
+.obj {
+  width:100%;
+  text-align:left;
+  background:var(--panel);
+  color:var(--ink);
+  padding:11px;
+  border:1px solid var(--line);
+  border-radius:12px;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+.obj[aria-selected="true"] {
+  border-color:var(--brand);
+  background:var(--soft);
+}
+.sw {width:12px;height:12px;border-radius:4px;flex:none}
+.obj small {display:block;color:var(--muted)}
+.pill {margin-left:auto;color:var(--muted);font-size:12px}
+.pill.mv {color:var(--ok)}
+table {width:100%;border-collapse:collapse}
+th,td {padding:12px 8px;text-align:left;border-bottom:1px solid var(--line)}
+th {font-size:12px;color:var(--muted)}
+.st {padding:3px 9px;border-radius:99px;font-size:12px}
+.st.done {background:#dcfce7;color:#166534}
+.st.run {background:#dbeafe;color:#1e40af}
+.st.fail {background:#fee2e2;color:#991b1b}
+.actions {display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
+@media(max-width:900px) {
+  .grid,.viewer {grid-template-columns:1fr}
+}
 </style>
 </head>
 <body>
+
 <header>
-  <div class="logo"><i></i>MotionScope</div>
-  <nav id="nav">
+  <div class="logo">▣ MotionScope</div>
+  <nav id="nav" aria-label="Prototype screens">
     <button data-s="upload" aria-current="true">1 · New analysis</button>
-    <button data-s="progress">2 · Progress</button>
-    <button data-s="results">3 · Results</button>
-    <button data-s="history">4 · History</button>
+    <button data-s="progress" aria-current="false">2 · Progress</button>
+    <button data-s="results" aria-current="false">3 · Results</button>
+    <button data-s="history" aria-current="false">4 · History</button>
   </nav>
-  <span class="tag">Clickable mockup · simulated data</span>
+  <span class="tag">UI Prototype · Simulated analysis</span>
 </header>
+
 <main>
 
+<!-- SCREEN 1: NEW ANALYSIS -->
 <section id="upload" class="on">
   <h1>New analysis</h1>
-  <p class="sub">Upload a video, choose what to look for, start. Processing happens on this computer.</p>
+  <p class="sub">Choose a video and configure object detection settings.</p>
+
   <div class="grid">
     <div class="card">
-      <div class="drop" id="drop" tabindex="0" role="button">
+      <div class="drop" id="drop" role="button" tabindex="0">
         <b id="dropTitle">Drop a video here or click to choose</b>
-        <span id="dropSub">MP4, AVI, MOV, MKV · up to 500 MB</span>
+        <span id="dropSub">MP4, AVI, MOV, MKV · Max 500 MB</span>
       </div>
-      <p class="note">Uses the sample clip <code>parking-lot.mp4</code> in this mockup. A real file picker is added in the frontend.</p>
+
+      <input type="file" id="fileInput"
+        accept=".mp4,.avi,.mov,.mkv,video/*" hidden>
+
+      <p id="uploadError" class="error" role="alert"></p>
+      <p class="note">
+        Prototype only: the selected file is not uploaded
+        to a server. Analysis results use simulated data.
+      </p>
     </div>
+
     <div class="card">
       <label>Object classes</label>
       <div class="chips" id="classes">
@@ -106,43 +261,106 @@ th{color:var(--muted);font-weight:600;font-size:12px;text-transform:uppercase;le
         <button class="chip" aria-pressed="false">truck</button>
         <button class="chip" aria-pressed="false">bus</button>
       </div>
-      <label>Confidence threshold: <span id="confV">0.35</span></label>
-      <input type="range" id="conf" min="0.1" max="0.9" step="0.05" value="0.35">
-      <div class="row"><span>more objects</span><span>fewer false alarms</span></div>
-      <label>Counts as moving after: <span id="movV">25 px</span></label>
-      <input type="range" id="mov" min="5" max="100" step="5" value="25">
-      <label>Tracker</label>
-      <select><option>ByteTrack (recommended)</option><option>BoT-SORT</option></select>
-      <label>Save</label>
-      <div class="chips"><button class="chip" aria-pressed="true">crops</button><button class="chip" aria-pressed="true">clips</button><button class="chip" aria-pressed="true">JSON + CSV</button></div>
-      <p style="margin:20px 0 0"><button class="btn" id="start" disabled>Start analysis</button></p>
+
+      <label for="conf">Confidence threshold:
+        <span id="confV">0.35</span>
+      </label>
+      <input type="range" id="conf"
+        min="0.1" max="0.9" step="0.05" value="0.35">
+      <div class="row">
+        <span>More objects</span>
+        <span>Fewer false alarms</span>
+      </div>
+
+      <label for="mov">Counts as moving after:
+        <span id="movV">25 px</span>
+      </label>
+      <input type="range" id="mov"
+        min="5" max="100" step="5" value="25">
+
+      <label for="tracker">Tracker</label>
+      <select id="tracker">
+        <option>ByteTrack (recommended)</option>
+        <option>BoT-SORT</option>
+      </select>
+
+      <label>Save options</label>
+      <div class="chips">
+        <button class="chip" aria-pressed="true">crops</button>
+        <button class="chip" aria-pressed="true">clips</button>
+        <button class="chip" aria-pressed="true">JSON + CSV</button>
+      </div>
+
+      <div class="actions">
+        <button class="btn" id="start" disabled>Start analysis</button>
+      </div>
     </div>
   </div>
 </section>
 
+<!-- SCREEN 2: PROGRESS -->
 <section id="progress">
-  <h1>Analysis running</h1>
-  <p class="sub">parking-lot.mp4 · 2 min 14 s · 1280×720</p>
-  <div class="card" style="max-width:640px">
-    <div class="row" style="margin-bottom:8px"><span id="pstage">Reading video</span><b id="ppct">0%</b></div>
+  <h1>Analysis progress</h1>
+  <p class="sub">
+    <span id="progressFile">Sample video</span> · Simulated processing
+  </p>
+
+  <div class="card" style="max-width:680px">
+    <div class="row">
+      <span id="pstage">Waiting for analysis</span>
+      <b id="ppct">0%</b>
+    </div>
     <div class="bar"><div id="pbar"></div></div>
+
     <ul class="steps" id="steps">
-      <li>Reading video</li><li>Detecting objects</li><li>Tracking objects</li><li>Finding moving objects</li><li>Saving crops, clips and report</li>
+      <li>Reading video</li>
+      <li>Detecting objects</li>
+      <li>Tracking objects</li>
+      <li>Finding moving objects</li>
+      <li>Saving crops, clips and report</li>
     </ul>
-    <p style="margin:20px 0 0;display:flex;gap:10px"><button class="btn ghost" id="cancel">Cancel</button><button class="btn" id="toRes" disabled>Open results</button></p>
+
+    <div class="actions">
+      <button class="btn ghost" id="cancel">Cancel</button>
+      <button class="btn" id="toRes" disabled>Open results</button>
+    </div>
+
+    <p class="note">Progress is simulated for the UI demonstration.</p>
   </div>
 </section>
 
+<!-- SCREEN 3: RESULTS -->
 <section id="results">
-  <h1>Results</h1>
-  <p class="sub">parking-lot.mp4 · 6 objects found · 4 moving</p>
+  <h1>Analysis results</h1>
+  <p class="sub">Demo data · 6 objects found · 4 moving</p>
+
   <div class="viewer">
     <div class="card">
       <canvas id="cv" width="800" height="450"></canvas>
-      <div class="ctrl"><button class="btn ghost" id="play">Play</button><input type="range" id="seek" min="0" max="1000" value="0"><span id="tm" class="row">0:00</span></div>
-      <div class="timeline" id="tl"><div class="head" id="head"></div></div>
-      <div class="chips" style="margin-top:12px"><button class="chip" id="ovl" aria-pressed="true">Show overlay</button></div>
+
+      <div class="ctrl">
+        <button class="btn ghost" id="play">Play</button>
+        <input type="range" id="seek"
+          min="0" max="1000" value="0" aria-label="Demo timeline position">
+        <span id="tm">0:00</span>
+      </div>
+
+      <div class="timeline" id="tl">
+        <div class="head" id="head"></div>
+      </div>
+
+      <div class="chips" style="margin-top:12px">
+        <button class="chip" id="ovl" aria-pressed="true">
+          Show overlay
+        </button>
+      </div>
+
+      <p class="note">
+        Animated demonstration of object boxes, IDs and tracks.
+        This is not a real video or model inference.
+      </p>
     </div>
+
     <div class="card">
       <div class="toolbar">
         <button class="chip" data-f="all" aria-pressed="true">All</button>
@@ -150,107 +368,485 @@ th{color:var(--muted);font-weight:600;font-size:12px;text-transform:uppercase;le
         <button class="chip" data-f="person" aria-pressed="false">People</button>
         <button class="chip" data-f="car" aria-pressed="false">Cars</button>
       </div>
-      <div class="list" id="list" role="listbox"></div>
-      <p style="margin:14px 0 0;display:flex;gap:8px;flex-wrap:wrap"><button class="btn ghost">Download clip</button><button class="btn ghost">Crops (zip)</button><button class="btn">Export report</button></p>
+
+      <div class="list" id="list"></div>
+
+      <div class="actions">
+        <button class="btn ghost" disabled title="Requires backend">
+          Download clip
+        </button>
+        <button class="btn ghost" disabled title="Requires backend">
+          Crops (zip)
+        </button>
+        <button class="btn" id="exportDemo">Export demo report</button>
+      </div>
     </div>
   </div>
 </section>
 
+<!-- SCREEN 4: HISTORY -->
 <section id="history">
-  <h1>History</h1>
-  <p class="sub">Earlier analyses stored on this computer.</p>
+  <h1>Analysis history</h1>
+  <p class="sub">Example jobs for the prototype demonstration.</p>
+
   <div class="card" style="overflow:auto">
     <table>
-      <thead><tr><th>Video</th><th>Date</th><th>Objects</th><th>Status</th><th></th></tr></thead>
+      <thead>
+        <tr>
+          <th>Video</th>
+          <th>Date</th>
+          <th>Objects</th>
+          <th>Status</th>
+          <th>Action</th>
+        </tr>
+      </thead>
       <tbody>
-        <tr><td>parking-lot.mp4</td><td>23 Oct 2026</td><td>6 (4 moving)</td><td><span class="st done">done</span></td><td><button class="btn ghost" data-go="results">Open</button></td></tr>
-        <tr><td>entrance-cam-02.avi</td><td>22 Oct 2026</td><td>14 (9 moving)</td><td><span class="st done">done</span></td><td><button class="btn ghost">Open</button></td></tr>
-        <tr><td>crossroad.mov</td><td>22 Oct 2026</td><td>–</td><td><span class="st run">running 63%</span></td><td><button class="btn ghost" data-go="progress">View</button></td></tr>
-        <tr><td>broken-file.mkv</td><td>21 Oct 2026</td><td>–</td><td><span class="st fail">failed: cannot decode</span></td><td><button class="btn ghost">Delete</button></td></tr>
+        <tr>
+          <td>parking-lot.mp4</td>
+          <td>23 Oct 2026</td>
+          <td>6 (4 moving)</td>
+          <td><span class="st done">done</span></td>
+          <td><button class="btn ghost" data-go="results">Open</button></td>
+        </tr>
+        <tr>
+          <td>entrance-cam-02.avi</td>
+          <td>22 Oct 2026</td>
+          <td>14 (9 moving)</td>
+          <td><span class="st done">done</span></td>
+          <td><button class="btn ghost" data-go="results">Open</button></td>
+        </tr>
+        <tr>
+          <td>crossroad.mov</td>
+          <td>22 Oct 2026</td>
+          <td>—</td>
+          <td><span class="st run">running 63%</span></td>
+          <td><button class="btn ghost" data-go="progress">View</button></td>
+        </tr>
+        <tr id="failedRow">
+          <td>broken-file.mkv</td>
+          <td>21 Oct 2026</td>
+          <td>—</td>
+          <td><span class="st fail">failed: cannot decode</span></td>
+          <td><button class="btn ghost" id="deleteDemo">Delete</button></td>
+        </tr>
       </tbody>
     </table>
+    <p class="note">
+      History is simulated. Changes here are not saved to a database.
+    </p>
   </div>
 </section>
+
 </main>
 
 <script>
-const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
-function show(id){
-  $$('section').forEach(s=>s.classList.toggle('on',s.id===id));
-  $$('#nav button').forEach(b=>b.setAttribute('aria-current',b.dataset.s===id));
-  if(id==='results') draw();
+"use strict";
+
+const $ = selector => document.querySelector(selector);
+const $$ = selector => [...document.querySelectorAll(selector)];
+
+let progressTimer = null;
+let playing = false;
+let progressActive = false;
+let selectedFile = null;
+
+function show(id) {
+  $$("main section").forEach(section => {
+    section.classList.toggle("on", section.id === id);
+  });
+
+  $$("#nav button").forEach(button => {
+    button.setAttribute("aria-current", String(button.dataset.s === id));
+  });
+
+  if (id !== "results") {
+    playing = false;
+    $("#play").textContent = "Play";
+  } else {
+    draw();
+  }
 }
-$$('#nav button').forEach(b=>b.onclick=()=>show(b.dataset.s));
-$$('[data-go]').forEach(b=>b.onclick=()=>show(b.dataset.go));
-$$('.chip[aria-pressed]').forEach(c=>{ if(!c.dataset.f && c.id!=='ovl') c.onclick=()=>c.setAttribute('aria-pressed',c.getAttribute('aria-pressed')!=='true') });
-$('#conf').oninput=e=>$('#confV').textContent=(+e.target.value).toFixed(2);
-$('#mov').oninput=e=>$('#movV').textContent=e.target.value+' px';
 
-// upload
-$('#drop').onclick=()=>{ $('#drop').classList.add('has'); $('#dropTitle').textContent='parking-lot.mp4'; $('#dropSub').textContent='2 min 14 s · 1280×720 · 48 MB · ready'; $('#start').disabled=false; };
-$('#start').onclick=()=>{ show('progress'); runProgress(); };
+$$("#nav button").forEach(button => {
+  button.addEventListener("click", () => show(button.dataset.s));
+});
 
-// progress
-let timer;
-function runProgress(){
-  clearInterval(timer); let p=0; $('#toRes').disabled=true;
-  const items=$$('#steps li');
-  timer=setInterval(()=>{
-    p+=2; if(p>100)p=100;
-    $('#pbar').style.width=p+'%'; $('#ppct').textContent=p+'%';
-    const k=Math.min(4,Math.floor(p/20));
-    items.forEach((li,i)=>li.className=i<k?'done':i===k?'now':'');
-    $('#pstage').textContent=items[k].textContent;
-    if(p>=100){clearInterval(timer);items.forEach(li=>li.className='done');$('#pstage').textContent='Finished';$('#toRes').disabled=false}
-  },90);
+$$("[data-go]").forEach(button => {
+  button.addEventListener("click", () => show(button.dataset.go));
+});
+
+// Settings
+$$(".chip[aria-pressed]").forEach(button => {
+  if (button.dataset.f || button.id === "ovl") return;
+
+  button.addEventListener("click", () => {
+    const active = button.getAttribute("aria-pressed") === "true";
+    button.setAttribute("aria-pressed", String(!active));
+  });
+});
+
+$("#conf").addEventListener("input", event => {
+  $("#confV").textContent = Number(event.target.value).toFixed(2);
+});
+
+$("#mov").addEventListener("input", event => {
+  $("#movV").textContent = event.target.value + " px";
+});
+
+// File selection
+const drop = $("#drop");
+const fileInput = $("#fileInput");
+const allowedTypes = [".mp4", ".avi", ".mov", ".mkv"];
+const maxSize = 500 * 1024 * 1024;
+
+function handleFile(file) {
+  $("#uploadError").textContent = "";
+
+  if (!file) return;
+
+  const extension = "." + file.name.split(".").pop().toLowerCase();
+
+  if (!allowedTypes.includes(extension)) {
+    $("#uploadError").textContent =
+      "Unsupported file. Choose MP4, AVI, MOV or MKV.";
+    $("#start").disabled = true;
+    selectedFile = null;
+    drop.classList.remove("has");
+    $("#dropTitle").textContent = "Drop a video here or click to choose";
+    $("#dropSub").textContent = "MP4, AVI, MOV, MKV · Max 500 MB";
+    return;
+  }
+
+  if (file.size > maxSize) {
+    $("#uploadError").textContent =
+      "File exceeds the 500 MB prototype limit.";
+    $("#start").disabled = true;
+    selectedFile = null;
+    drop.classList.remove("has");
+    $("#dropTitle").textContent = "Drop a video here or click to choose";
+    $("#dropSub").textContent = "MP4, AVI, MOV, MKV · Max 500 MB";
+    return;
+  }
+
+  selectedFile = file;
+  drop.classList.add("has");
+  $("#dropTitle").textContent = file.name;
+  $("#dropSub").textContent =
+    (file.size / (1024 * 1024)).toFixed(2) +
+    " MB · Ready for demo analysis";
+  $("#start").disabled = false;
 }
-$('#cancel').onclick=()=>{clearInterval(timer);show('upload')};
-$('#toRes').onclick=()=>show('results');
 
-// results
-const objs=[
- {id:1,cls:'person',col:'#22c55e',mv:true, t0:.05,t1:.55,path:[[.1,.7],[.55,.62]]},
- {id:2,cls:'car',   col:'#3b82f6',mv:true, t0:.15,t1:.85,path:[[.95,.5],[.2,.55]]},
- {id:3,cls:'person',col:'#f59e0b',mv:true, t0:.35,t1:.95,path:[[.5,.85],[.8,.7]]},
- {id:4,cls:'car',   col:'#a855f7',mv:false,t0:0,  t1:1,  path:[[.3,.3],[.3,.3]]},
- {id:5,cls:'car',   col:'#ef4444',mv:true, t0:.55,t1:.9, path:[[.05,.4],[.7,.45]]},
- {id:6,cls:'person',col:'#14b8a6',mv:false,t0:.1, t1:.7, path:[[.7,.25],[.7,.25]]},
+drop.addEventListener("click", () => fileInput.click());
+
+drop.addEventListener("keydown", event => {
+  if (event.key === "Enter" || event.key === " ") {
+    event.preventDefault();
+    fileInput.click();
+  }
+});
+
+fileInput.addEventListener("change", event => {
+  handleFile(event.target.files[0]);
+});
+
+drop.addEventListener("dragover", event => {
+  event.preventDefault();
+  drop.classList.add("dragover");
+});
+
+drop.addEventListener("dragleave", () => {
+  drop.classList.remove("dragover");
+});
+
+drop.addEventListener("drop", event => {
+  event.preventDefault();
+  drop.classList.remove("dragover");
+  handleFile(event.dataTransfer.files[0]);
+});
+
+// Simulated analysis
+function runProgress() {
+  clearInterval(progressTimer);
+
+  let progress = 0;
+  progressActive = true;
+
+  $("#toRes").disabled = true;
+  $("#cancel").disabled = false;
+  $("#pbar").style.width = "0%";
+  $("#ppct").textContent = "0%";
+
+  const items = $$("#steps li");
+  items.forEach(item => item.className = "");
+  $("#pstage").textContent = "Reading video";
+
+  progressTimer = setInterval(() => {
+    progress = Math.min(progress + 2, 100);
+
+    $("#pbar").style.width = progress + "%";
+    $("#ppct").textContent = progress + "%";
+
+    const stage = Math.min(4, Math.floor(progress / 20));
+
+    items.forEach((item, index) => {
+      item.className =
+        index < stage ? "done" :
+        index === stage ? "now" : "";
+    });
+
+    $("#pstage").textContent = items[stage].textContent;
+
+    if (progress === 100) {
+      clearInterval(progressTimer);
+      progressActive = false;
+      items.forEach(item => item.className = "done");
+      $("#pstage").textContent = "Finished";
+      $("#toRes").disabled = false;
+      $("#cancel").disabled = true;
+    }
+  }, 90);
+}
+
+$("#start").addEventListener("click", () => {
+  if (!selectedFile) return;
+  $("#progressFile").textContent = selectedFile.name;
+  show("progress");
+  runProgress();
+});
+
+$("#cancel").addEventListener("click", () => {
+  clearInterval(progressTimer);
+  progressActive = false;
+  show("upload");
+});
+
+$("#toRes").addEventListener("click", () => show("results"));
+
+// Simulated object tracking data
+const objects = [
+  {id:1,cls:"person",col:"#22c55e",mv:true,t0:.05,t1:.55,path:[[.1,.7],[.55,.62]]},
+  {id:2,cls:"car",col:"#3b82f6",mv:true,t0:.15,t1:.85,path:[[.95,.5],[.2,.55]]},
+  {id:3,cls:"person",col:"#f59e0b",mv:true,t0:.35,t1:.95,path:[[.5,.85],[.8,.7]]},
+  {id:4,cls:"car",col:"#a855f7",mv:false,t0:0,t1:1,path:[[.3,.3],[.3,.3]]},
+  {id:5,cls:"car",col:"#ef4444",mv:true,t0:.55,t1:.9,path:[[.05,.4],[.7,.45]]},
+  {id:6,cls:"person",col:"#14b8a6",mv:false,t0:.1,t1:.7,path:[[.7,.25],[.7,.25]]}
 ];
-let pos=0,playing=false,sel=null,filt='all';
-const cv=$('#cv'),ctx=cv.getContext('2d');
-function fmt(f){const s=Math.round(f*134);return Math.floor(s/60)+':'+String(s%60).padStart(2,'0')}
-function box(o,t){const k=(t-o.t0)/(o.t1-o.t0);const x=o.path[0][0]+(o.path[1][0]-o.path[0][0])*k,y=o.path[0][1]+(o.path[1][1]-o.path[0][1])*k;const w=o.cls==='car'?.14:.05,h=o.cls==='car'?.1:.14;return[x*800-w*400,y*450-h*225,w*800,h*450]}
-function draw(){
-  ctx.fillStyle='#1e293b';ctx.fillRect(0,0,800,450);
-  ctx.fillStyle='#334155';ctx.fillRect(0,260,800,150);
-  ctx.strokeStyle='#475569';ctx.setLineDash([18,14]);ctx.beginPath();ctx.moveTo(0,335);ctx.lineTo(800,335);ctx.stroke();ctx.setLineDash([]);
-  objs.forEach(o=>{ if(pos<o.t0||pos>o.t1)return; const [x,y,w,h]=box(o,pos);
-    ctx.fillStyle=o.cls==='car'?'#94a3b8':'#cbd5e1';ctx.fillRect(x,y,w,h);
-    if($('#ovl').getAttribute('aria-pressed')==='true'){
-      ctx.lineWidth=sel===o.id?4:2;ctx.strokeStyle=o.col;ctx.strokeRect(x,y,w,h);
-      ctx.font='bold 13px system-ui';const tx=`#${o.id} ${o.cls}${o.mv?'':' (static)'}`;const tw=ctx.measureText(tx).width+10;
-      ctx.fillStyle=o.col;ctx.fillRect(x,y-20,tw,20);ctx.fillStyle='#fff';ctx.fillText(tx,x+5,y-6);}
+
+let position = 0;
+let selectedObject = null;
+let filter = "all";
+
+const canvas = $("#cv");
+const ctx = canvas.getContext("2d");
+
+function formatTime(value) {
+  const seconds = Math.round(value * 134);
+  return Math.floor(seconds / 60) + ":" +
+    String(seconds % 60).padStart(2, "0");
+}
+
+function getBox(object, time) {
+  const factor = (time - object.t0) / (object.t1 - object.t0);
+
+  const x = object.path[0][0] +
+    (object.path[1][0] - object.path[0][0]) * factor;
+
+  const y = object.path[0][1] +
+    (object.path[1][1] - object.path[0][1]) * factor;
+
+  const width = object.cls === "car" ? .14 : .05;
+  const height = object.cls === "car" ? .10 : .14;
+
+  return [
+    x * 800 - width * 400,
+    y * 450 - height * 225,
+    width * 800,
+    height * 450
+  ];
+}
+
+function draw() {
+  ctx.fillStyle = "#1e293b";
+  ctx.fillRect(0, 0, 800, 450);
+
+  ctx.fillStyle = "#334155";
+  ctx.fillRect(0, 260, 800, 150);
+
+  ctx.strokeStyle = "#475569";
+  ctx.setLineDash([18, 14]);
+  ctx.beginPath();
+  ctx.moveTo(0, 335);
+  ctx.lineTo(800, 335);
+  ctx.stroke();
+  ctx.setLineDash([]);
+
+  objects.forEach(object => {
+    if (position < object.t0 || position > object.t1) return;
+
+    const [x,y,w,h] = getBox(object, position);
+
+    ctx.fillStyle = object.cls === "car" ? "#94a3b8" : "#cbd5e1";
+    ctx.fillRect(x,y,w,h);
+
+    if ($("#ovl").getAttribute("aria-pressed") === "true") {
+      ctx.lineWidth = selectedObject === object.id ? 4 : 2;
+      ctx.strokeStyle = object.col;
+      ctx.strokeRect(x,y,w,h);
+
+      const label = "#" + object.id + " " + object.cls +
+        (object.mv ? "" : " (static)");
+
+      ctx.font = "bold 13px system-ui";
+      const labelWidth = ctx.measureText(label).width + 10;
+
+      ctx.fillStyle = object.col;
+      ctx.fillRect(x,y-20,labelWidth,20);
+      ctx.fillStyle = "#fff";
+      ctx.fillText(label,x+5,y-6);
+    }
   });
-  $('#seek').value=pos*1000;$('#tm').textContent=fmt(pos);$('#head').style.left=(pos*100)+'%';
+
+  $("#seek").value = position * 1000;
+  $("#tm").textContent = formatTime(position);
+  $("#head").style.left = position * 100 + "%";
 }
-function buildTl(){
-  const tl=$('#tl');$$('#tl span').forEach(s=>s.remove());
-  objs.forEach((o,i)=>{const s=document.createElement('span');s.style.cssText=`left:${o.t0*100}%;width:${(o.t1-o.t0)*100}%;top:${6+i*8}px;background:${o.col};height:6px`;tl.appendChild(s)});
-}
-function buildList(){
-  const l=$('#list');l.innerHTML='';
-  objs.filter(o=>filt==='all'||(filt==='moving'?o.mv:o.cls===filt)).forEach(o=>{
-    const b=document.createElement('button');b.className='obj';b.setAttribute('role','option');b.setAttribute('aria-selected',sel===o.id);
-    b.innerHTML=`<span class="sw" style="background:${o.col}"></span><span><b>#${o.id} ${o.cls}</b><small>${fmt(o.t0)} – ${fmt(o.t1)}</small></span><span class="pill ${o.mv?'mv':''}">${o.mv?'moving':'static'}</span>`;
-    b.onclick=()=>{sel=o.id;pos=o.t0;buildList();draw()};l.appendChild(b);
+
+function buildTimeline() {
+  const timeline = $("#tl");
+
+  $$("#tl span").forEach(item => item.remove());
+
+  objects.forEach((object,index) => {
+    const span = document.createElement("span");
+    span.style.cssText = `
+      left:${object.t0*100}%;
+      width:${(object.t1-object.t0)*100}%;
+      top:${6+index*9}px;
+      height:7px;
+      background:${object.col};
+    `;
+    timeline.appendChild(span);
   });
 }
-$$('[data-f]').forEach(c=>c.onclick=()=>{filt=c.dataset.f;$$('[data-f]').forEach(x=>x.setAttribute('aria-pressed',x===c));buildList()});
-$('#ovl').onclick=e=>{e.target.setAttribute('aria-pressed',e.target.getAttribute('aria-pressed')!=='true');draw()};
-$('#seek').oninput=e=>{pos=e.target.value/1000;draw()};
-$('#play').onclick=()=>{playing=!playing;$('#play').textContent=playing?'Pause':'Play'};
-setInterval(()=>{if(playing){pos+=.004;if(pos>=1){pos=0}draw()}},40);
-buildTl();buildList();draw();
+
+function buildList() {
+  const list = $("#list");
+  list.innerHTML = "";
+
+  const visibleObjects = objects.filter(object =>
+    filter === "all" ||
+    (filter === "moving" ? object.mv : object.cls === filter)
+  );
+
+  visibleObjects.forEach(object => {
+    const button = document.createElement("button");
+    button.className = "obj";
+    button.setAttribute("aria-selected",
+      String(selectedObject === object.id));
+
+    const color = document.createElement("span");
+    color.className = "sw";
+    color.style.background = object.col;
+
+    const info = document.createElement("span");
+    const name = document.createElement("b");
+    name.textContent = "#" + object.id + " " + object.cls;
+
+    const times = document.createElement("small");
+    times.textContent =
+      formatTime(object.t0) + " – " + formatTime(object.t1);
+
+    info.append(name,times);
+
+    const status = document.createElement("span");
+    status.className = "pill" + (object.mv ? " mv" : "");
+    status.textContent = object.mv ? "moving" : "static";
+
+    button.append(color,info,status);
+
+    button.addEventListener("click", () => {
+      selectedObject = object.id;
+      position = object.t0;
+      buildList();
+      draw();
+    });
+
+    list.appendChild(button);
+  });
+}
+
+$$("[data-f]").forEach(button => {
+  button.addEventListener("click", () => {
+    filter = button.dataset.f;
+
+    $$("[data-f]").forEach(item => {
+      item.setAttribute("aria-pressed", String(item === button));
+    });
+
+    buildList();
+  });
+});
+
+$("#ovl").addEventListener("click", event => {
+  const active = event.target.getAttribute("aria-pressed") === "true";
+  event.target.setAttribute("aria-pressed", String(!active));
+  draw();
+});
+
+$("#seek").addEventListener("input", event => {
+  position = Number(event.target.value) / 1000;
+  draw();
+});
+
+$("#play").addEventListener("click", () => {
+  playing = !playing;
+  $("#play").textContent = playing ? "Pause" : "Play";
+});
+
+setInterval(() => {
+  if (playing) {
+    position += .004;
+    if (position >= 1) position = 0;
+    draw();
+  }
+}, 40);
+
+// Export simulated results
+$("#exportDemo").addEventListener("click", () => {
+  const report = objects.map(object => ({
+    track_id: object.id,
+    class: object.cls,
+    first_time_seconds: Math.round(object.t0 * 134),
+    last_time_seconds: Math.round(object.t1 * 134),
+    moving: object.mv
+  }));
+
+  const blob = new Blob(
+    [JSON.stringify({demo:true,objects:report},null,2)],
+    {type:"application/json"}
+  );
+
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = "motionscope-demo-report.json";
+  link.click();
+
+  setTimeout(() => URL.revokeObjectURL(url),1000);
+});
+
+// Simulated history deletion
+$("#deleteDemo").addEventListener("click", () => {
+  if (confirm("Remove this example job from the prototype table?")) {
+    $("#failedRow").remove();
+  }
+});
+
+buildTimeline();
+buildList();
+draw();
+
 </script>
 </body>
 </html>

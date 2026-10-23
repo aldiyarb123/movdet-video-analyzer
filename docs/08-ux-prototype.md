@@ -1,41 +1,148 @@
+
 # 8. UX and Prototype
 
-Open the clickable mockup: [`../prototype/index.html`](../prototype/index.html) (any browser, no install). Data is simulated; it shows the interaction, not real analysis.
+## 8.1 Overview
 
-Screenshots: `evidence/prototype-*.png`.
+MotionScope is a video analysis application designed to
+detect, track, and identify moving objects in recorded videos.
 
-## 8.1 Key user scenarios
+For DIP-9, an interactive UI prototype was reviewed and improved.
 
-| Scenario | Steps | Screen |
-|---|---|---|
-| S1 Analyse a recording | Choose video → pick classes and thresholds → start | New analysis |
-| S2 Follow a job | See stage and percentage; cancel if needed | Progress |
-| S3 Inspect results | Play with overlay; click an object to jump to it; filter by moving / class | Results |
-| S4 Take the output | Download clip, crops, report | Results |
-| S5 Come back later | Open an earlier job; delete a failed one | History |
+The prototype contains four clickable screens and demonstrates
+the intended user workflow without requiring a backend service.
 
-## 8.2 Screens
+Prototype location:
+`prototype/index.html`
 
-1. **New analysis**: drop area, class chips, confidence slider, motion threshold, tracker, what to save. Start is disabled until a file is chosen.
-2. **Progress**: stage list with current step, percentage bar, cancel.
-3. **Results**: video with canvas overlay (box, ID, class), seek bar, timeline of when each object is present, filterable object list, export actions.
-4. **History**: table of jobs with status (done, running, failed with reason).
+The prototype runs directly in a web browser.
 
-## 8.3 Design decisions
+## 8.2 Prototype Screens
 
-- Settings have plain-language hints ("more objects / fewer false alarms") for non-programmers.
-- Moving and static objects are visibly distinct (label and pill) because the motion criterion is the project's core idea.
-- The overlay can be switched off to judge the raw video.
-- Failures give a reason (FR-03, NFR-05).
-- Light and dark themes follow the system setting.
+### Screen 1: New Analysis
 
-## 8.4 API interaction (for external systems)
+The user can:
+- Select a local video file.
+- Drag and drop a video.
+- Choose object classes.
+- Adjust the confidence threshold.
+- Configure the motion threshold.
+- Select a tracking algorithm.
+- Start simulated analysis.
 
-The same functions are available through the REST API; request and response examples are in [07-architecture.md](07-architecture.md#75-api-sketch-examples-for-the-contract).
+Supported file extensions:
+MP4, AVI, MOV, MKV.
 
-## 8.5 Open questions for the frontend owner and for interviews
+The prototype applies a 500 MB file-size limit.
 
-- Which export formats do real users need first?
-- Is a per-object clip or a single summary video more useful?
-- Should the user be able to correct a wrong class or merge two tracks?
-- Accessibility: keyboard navigation and contrast review.
+### Screen 2: Analysis Progress
+
+The screen demonstrates:
+- Analysis progress percentage.
+- Five processing stages.
+- A progress bar.
+- Cancellation.
+- Navigation to the results screen.
+
+Progress is simulated using JavaScript.
+
+### Screen 3: Results Viewer
+
+The prototype demonstrates:
+- Object bounding boxes.
+- Track IDs and object classes.
+- Moving and stationary object labels.
+- Playback and seeking controls.
+- Object filtering.
+- Object timeline.
+- Overlay visibility toggle.
+- Demo JSON report export.
+
+Objects and tracking results use simulated data.
+
+Real video playback with frame-synchronized overlays
+will be implemented separately under DIP-18.
+
+### Screen 4: Analysis History
+
+The history screen displays example jobs with statuses:
+- Done
+- Running
+- Failed
+
+Users can navigate to example results and remove
+a failed example job from the demonstration table.
+
+History data is not stored in a database.
+
+## 8.3 Improvements in DIP-9
+
+The prototype was refined with:
+
+1. Local file selection.
+2. Drag-and-drop file interaction.
+3. File extension and size validation.
+4. Keyboard support for the upload area.
+5. Progress reset for repeated demonstrations.
+6. Interactive object list and timeline.
+7. Simulated JSON export.
+8. Clear labeling of simulated functionality.
+
+The original four-screen design was retained.
+
+## 8.4 Prototype Limitations
+
+The prototype does not perform real video analysis.
+
+It does not:
+- Upload files to an API.
+- Run an object detection model.
+- Perform real video tracking.
+- Save jobs to a database.
+- Generate real object clips or crops.
+
+The frontend API integration is planned under DIP-17.
+
+The real results viewer is planned under DIP-18.
+
+Usability evaluation is planned under DIP-21.
+
+## 8.5 Verification Checklist
+
+The following checks should be completed manually
+in a browser before the DIP-9 pull request is merged:
+
+- [ ] All four screens can be opened.
+- [ ] A supported video can be selected.
+- [ ] Unsupported file extensions are rejected.
+- [ ] Files above 500 MB are rejected.
+- [ ] Drag and drop works.
+- [ ] Start analysis activates after file selection.
+- [ ] Simulated progress reaches 100%.
+- [ ] Cancel returns to New Analysis.
+- [ ] Open results displays demo objects.
+- [ ] Object filters update the list.
+- [ ] Overlay visibility can be toggled.
+- [ ] History navigation works.
+- [ ] Demo JSON report can be downloaded.
+
+## 8.6 Evidence
+
+Capture screenshots after testing:
+
+- `docs/evidence/dip-9-new-analysis.png`
+- `docs/evidence/dip-9-progress.png`
+- `docs/evidence/dip-9-results.png`
+- `docs/evidence/dip-9-history.png`
+
+Only completed and verified actions should be
+marked as passed in the final pull request.
+
+## 8.7 Conclusion
+
+DIP-9 provides an interactive four-screen prototype
+of the MotionScope video analysis application.
+
+The prototype is intended to demonstrate navigation,
+user interactions, and the future system workflow.
+
+It is not the final production frontend.
