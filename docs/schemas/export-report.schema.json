@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "MotionScope export report",
+  "type": "object",
+  "required": ["schema_version", "job_id", "tracks"],
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "type": "string",
+      "const": "1.0"
+    },
+    "job_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "tracks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "track_id",
+          "class",
+          "first_time_s",
+          "last_time_s",
+          "moving"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "track_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "class": {
+            "type": "string",
+            "minLength": 1
+          },
+          "first_time_s": {
+            "type": "number",
+            "minimum": 0
+          },
+          "last_time_s": {
+            "type": "number",
+            "minimum": 0
+          },
+          "moving": {
+            "type": "boolean"
+          }
+        }
+      }
+    }
+  }
+}
