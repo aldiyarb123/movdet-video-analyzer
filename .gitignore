@@ -20,7 +20,7 @@ dist/
 .vite/
 
 # Data and outputs (never commit real videos or personal data)
-data/
+/data/
 out/
 uploads/
 *.mp4
