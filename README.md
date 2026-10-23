@@ -9,8 +9,8 @@
 |---|---|
 | **Status** | Pre-defense 1: analysis, design, planning (no full application yet) |
 | **Supervisor** | Shuryn Tutkyshbayeva |
-| **Repository** | `<REPO_URL>` |
-| **YouTrack** | `<YOUTRACK_URL>` (project key `DIP`) |
+| **Repository** | `https://github.com/aldiyarb123/movdet-video-analyzer` |
+| **YouTrack** | `https://movdet-video-analyzer.youtrack.cloud/projects/DIP` (project key `DIP`) |
 | **Latest tag** | `pre-defense-1` (to be created at submission, see [docs/pre-defense-1-submission.md](docs/pre-defense-1-submission.md)) |
 
 ---

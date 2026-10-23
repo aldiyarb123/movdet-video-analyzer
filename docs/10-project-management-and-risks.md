@@ -4,8 +4,8 @@
 
 | Item | Value |
 |---|---|
-| Git repository | `<REPO_URL>` (GitHub or GitLab; supervisor and committee have access) |
-| YouTrack project | `<YOUTRACK_URL>`, key `DIP` |
+| Git repository | `https://github.com/aldiyarb123/movdet-video-analyzer` (GitHub or GitLab; supervisor and committee have access) |
+| YouTrack project | `https://movdet-video-analyzer.youtrack.cloud/projects/DIP`, key `DIP` |
 | Workflow | [CONTRIBUTING.md](../CONTRIBUTING.md) |
 
 ## 10.2 Responsibilities
@@ -30,34 +30,36 @@ Rule: a pull request is reviewed by someone other than its author.
 | Pre-defense 2 | `<date>` | Tag `pre-defense-2` |
 | Final pre-defense | `<date>` | Tag `final-pre-defense` |
 
-## 10.4 YouTrack backlog to create (key DIP)
+## 10.4 YouTrack backlog (project key DIP; IDs match YouTrack)
+
+Imported into YouTrack on 23 Oct 2026. The first YouTrack number is DIP-2 (DIP-1 was an empty placeholder and was deleted); the initial repository commit is therefore recorded under `DIP-1` in git history only.
 
 Each task needs: owner, expected outcome, acceptance criteria, deadline (deadlines below are suggestions).
 
 | ID | Task | Owner | Acceptance criteria | Deadline |
 |---|---|---|---|---|
-| DIP-1 | Create repository, README, structure | Alikhan | README completed; access for supervisor | 23 Oct |
-| DIP-2 | Project proposal and scope | Alikhan | `01-project-proposal.md` reviewed | 23 Oct |
-| DIP-3 | Literature review | All | ≥12 sources, table, verified metadata | 24 Oct |
-| DIP-4 | Existing systems comparison with hands-on checks | Aldiyar | All "to verify" cells replaced by tested facts | 30 Oct |
-| DIP-5 | Technology comparison and ADRs | Aldiyar | Scores reviewed, ADRs accepted | 24 Oct |
-| DIP-6 | Requirements and acceptance criteria | Alikhan | Reviewed with supervisor | 24 Oct |
-| DIP-7 | Architecture diagrams | Aldiyar | 3 diagrams with sources and exports | 24 Oct |
-| DIP-8 | UI prototype | Asylkhan | 4 screens clickable | 24 Oct |
-| DIP-9 | Verification plan | Alikhan | Metrics, datasets, conditions defined | 24 Oct |
-| DIP-10 | Conduct 3–5 interviews | All | Notes in `docs/evidence/` | 5 Nov |
-| DIP-11 | Baseline B0 + tests | Aldiyar | `pytest` green | 24 Oct |
-| DIP-12 | Download datasets, write loader | Alikhan | CDnet subset loads | 10 Nov |
-| DIP-13 | Backend skeleton + OpenAPI | Aldiyar | `POST /api/jobs` works with stub | 14 Nov |
-| DIP-14 | Detector + tracker integration | Aldiyar | Tracks produced on sample video | 28 Nov |
-| DIP-15 | Motion filter + extractor | Aldiyar | FR-06..08 tests pass | 5 Dec |
-| DIP-16 | Frontend skeleton + API client | Asylkhan | Upload view calls API | 21 Nov |
-| DIP-17 | Results viewer with overlay | Asylkhan | FR-09 acceptance met | 12 Dec |
-| DIP-18 | Export (JSON/CSV) | Alikhan | FR-11 schema validated | 12 Dec |
-| DIP-19 | Evaluation CLI + first results | Alikhan | One command prints metrics table | 19 Dec |
-| DIP-20 | Usability test | Asylkhan | ≥5 users, SUS computed | `<date>` |
-| DIP-21 | CI: tests on pull request | Alikhan | Workflow green on PR | 21 Nov |
-| DIP-22 | Docker compose setup | Aldiyar | Fresh machine runs in ≤10 commands | `<date>` |
+| DIP-2 | Create repository, README, structure | Alikhan | README completed; access for supervisor | 23 Oct |
+| DIP-3 | Project proposal and scope | Alikhan | `01-project-proposal.md` reviewed | 23 Oct |
+| DIP-4 | Literature review | All | ≥12 sources, table, verified metadata | 24 Oct |
+| DIP-5 | Existing systems comparison with hands-on checks | Aldiyar | All "to verify" cells replaced by tested facts | 30 Oct |
+| DIP-6 | Technology comparison and ADRs | Aldiyar | Scores reviewed, ADRs accepted | 24 Oct |
+| DIP-7 | Requirements and acceptance criteria | Alikhan | Reviewed with supervisor | 24 Oct |
+| DIP-8 | Architecture diagrams | Aldiyar | 3 diagrams with sources and exports | 24 Oct |
+| DIP-9 | UI prototype | Asylkhan | 4 screens clickable | 24 Oct |
+| DIP-10 | Verification plan | Alikhan | Metrics, datasets, conditions defined | 24 Oct |
+| DIP-11 | Conduct 3–5 interviews | All | Notes in `docs/evidence/` | 5 Nov |
+| DIP-12 | Baseline B0 + tests | Aldiyar | `pytest` green | 24 Oct |
+| DIP-13 | Download datasets, write loader | Alikhan | CDnet subset loads | 10 Nov |
+| DIP-14 | Backend skeleton + OpenAPI | Aldiyar | `POST /api/jobs` works with stub | 14 Nov |
+| DIP-15 | Detector + tracker integration | Aldiyar | Tracks produced on sample video | 28 Nov |
+| DIP-16 | Motion filter + extractor | Aldiyar | FR-06..08 tests pass | 5 Dec |
+| DIP-17 | Frontend skeleton + API client | Asylkhan | Upload view calls API | 21 Nov |
+| DIP-18 | Results viewer with overlay | Asylkhan | FR-09 acceptance met | 12 Dec |
+| DIP-19 | Export (JSON/CSV) | Alikhan | FR-11 schema validated | 12 Dec |
+| DIP-20 | Evaluation CLI + first results | Alikhan | One command prints metrics table | 19 Dec |
+| DIP-21 | Usability test | Asylkhan | ≥5 users, SUS computed | `<date>` |
+| DIP-22 | CI: tests on pull request | Alikhan | Workflow green on PR | 21 Nov |
+| DIP-23 | Docker compose setup | Aldiyar | Fresh machine runs in ≤10 commands | `<date>` |
 
 ## 10.5 Risks
 
@@ -76,14 +78,14 @@ Each task needs: owner, expected outcome, acceptance criteria, deadline (deadlin
 
 ## 10.6 Dependencies
 
-- Detector weights and licence (R1) → blocks DIP-14.
-- Interviews (DIP-10) → may change requirements (DIP-6).
-- API contract (DIP-13) → blocks frontend integration (DIP-16, 17).
-- Datasets (DIP-12) → blocks evaluation (DIP-19).
+- Detector weights and licence (R1) → blocks DIP-15.
+- Interviews (DIP-11) → may change requirements (DIP-7).
+- API contract (DIP-14) → blocks frontend integration (DIP-17, 17).
+- Datasets (DIP-13) → blocks evaluation (DIP-20).
 
 ## 10.7 Next steps after 24 Oct
 
 1. Create YouTrack tasks above and link them to branches and pull requests.
 2. Book interviews; log them.
 3. Check the Ultralytics licence and finalize ADR-0001.
-4. Start DIP-13 and DIP-16 in parallel.
+4. Start DIP-14 and DIP-17 in parallel.
