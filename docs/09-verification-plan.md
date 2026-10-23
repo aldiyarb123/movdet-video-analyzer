@@ -60,13 +60,26 @@ Record in every report: hardware (CPU, RAM, GPU), OS, Python and library version
 | Python / OpenCV / model versions | |
 | Resolution and FPS of test videos | 1280×720, native FPS |
 
-## 9.6 Usability test protocol
+## 9.6 Evaluation matrix and decision rules
+
+| Experiment | Dataset / input | Systems compared | Metrics | Decision rule |
+|---|---|---|---|---|
+| Motion robustness | Selected CDnet 2014 categories | B0 and P1 | Precision, Recall, F-measure, PWC | Report each category separately; explain any category where P1 does not improve on B0. |
+| Tracking quality | Licensed MOT20 subset and own labelled clips | B0 centroid tracker and P1 ByteTrack | MOTA, IDF1, HOTA, ID switches | P1 should improve IDF1 and reduce ID switches relative to B0. |
+| Throughput | Same 720p test clips on the reference machine | B0 and P1 | FPS and end-to-end seconds per minute of video | Run each configuration at least three times and report the median. |
+| Extraction quality | Own labelled clips | P1 | Valid crop and clip rate; clip start error | Each moving track must produce an openable crop; clip padding is measured in frames. |
+| Privacy and failure handling | Representative valid, corrupt, and unsupported files | P1 | Network activity, error response, service availability | No external network calls; invalid input fails with a readable reason while the service remains available. |
+| Usability | Five or more non-team participants | Web UI | SUS, task completion rate, task time | Compare the result with NFR-04: SUS at least 68 and at least 80% task completion without help. |
+
+All comparisons use the same input video, configuration, and measurement conditions for B0 and P1. The evaluation report will include raw run records or links to versioned result files.
+
+## 9.7 Usability test protocol
 
 - 5 or more participants not on the team; 3 tasks: upload a video and start analysis; find the first moving person and play its clip; export the report.
 - Observe without helping; record success, time and problems; then SUS questionnaire.
 - Outcome feeds the UI backlog; link evidence in `docs/evidence/`.
 
-## 9.7 Acceptance of the project aim
+## 9.8 Acceptance of the project aim
 
 The aim is considered demonstrated when:
 1. All **M** requirements in [06](06-requirements.md) pass their acceptance criteria.
@@ -74,7 +87,7 @@ The aim is considered demonstrated when:
 3. NFR-04 (usability) and NFR-03 (privacy) pass.
 4. A second member reproduces the headline metrics (NFR-09).
 
-## 9.8 Current status
+## 9.9 Current status
 
 | Item | Status |
 |---|---|
