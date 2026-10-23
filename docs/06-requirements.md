@@ -39,14 +39,25 @@ Priority uses MoSCoW: **M** must, **S** should, **C** could. Every mandatory req
 | NFR-09 | Reproducibility | M | Evaluation scripts, configs and seeds are versioned; a second team member reproduces the reported metrics. |
 | NFR-10 | Browser support | S | Works in current Chrome, Firefox and Edge. |
 
-## 6.3 Constraints and assumptions
+## 6.3 Validation and review status
+
+This is an initial specification for Pre-defense 1. Requirements derived from the proposal, comparison, and technical analysis are treated as design assumptions until they are confirmed by user interviews or supervisor feedback. The team will record each confirmed change in YouTrack and in the relevant document.
+
+| Requirement group | Current basis | Validation before the final specification |
+|---|---|---|
+| FR-01 to FR-03, FR-09 to FR-14 | Project proposal, UX prototype, and anticipated user workflow | Review the core user flow with the supervisor and interview user representatives. |
+| FR-04 to FR-08, FR-13, and FR-15 | Literature review, technology comparison, and verification plan | Confirm feasibility through the baseline benchmark and pipeline tests. |
+| FR-16 and FR-17 | Optional future scope from the project proposal | Keep outside the MVP unless approved after the core workflow is complete. |
+| NFR-01 to NFR-10 | Project risks, privacy constraints, and evaluation plan | Calibrate provisional numerical targets after the first benchmark; validate privacy and reliability through tests. |
+
+## 6.4 Constraints and assumptions
 
 - Static camera in the MVP.
 - Only consented or public-benchmark videos are used for evaluation.
 - Model and library licences must allow the intended use (risk R1).
 - Requirements are drafts until interviews are completed ([02](02-evidence-of-relevance.md)); update this file and note the source of each change.
 
-## 6.4 Traceability
+## 6.5 Traceability
 
 | Objective | Requirements | Verified by |
 |---|---|---|
