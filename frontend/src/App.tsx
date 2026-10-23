@@ -1,6 +1,11 @@
 
 import { useState } from "react";
-import { createJob, type AnalysisSettings, type JobResponse } from "./api/jobs";
+import {
+  createJob,
+  type AnalysisSettings,
+  type JobResponse,
+} from "./api/jobs";
+import ResultsViewer from "./components/ResultsViewer";
 import "./App.css";
 
 const objectClasses = ["person", "car", "bicycle", "truck", "bus"];
@@ -14,6 +19,9 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [job, setJob] = useState<JobResponse | null>(null);
   const [error, setError] = useState("");
+
+  // DIP-18: Navigation between upload and results viewer
+  const [page, setPage] = useState<"upload" | "results">("upload");
 
   function handleFile(file?: File) {
     setError("");
@@ -46,7 +54,9 @@ function App() {
     );
   }
 
-  async function handleSubmit(event: React.SubmitEvent<HTMLFormElement>) {
+  async function handleSubmit(
+    event: React.SubmitEvent<HTMLFormElement>
+  ) {
     event.preventDefault();
 
     if (!video || classes.length === 0 || loading) return;
@@ -70,24 +80,51 @@ function App() {
       setJob(result);
     } catch (err) {
       setError(
-        err instanceof Error ? err.message : "An unexpected error occurred."
+        err instanceof Error
+          ? err.message
+          : "An unexpected error occurred."
       );
     } finally {
       setLoading(false);
     }
   }
 
+  // DIP-18: Results viewer screen
+  if (page === "results") {
+    return (
+      <div className="app">
+        <header className="header">
+          <div className="logo">▣ MotionScope</div>
+          <span className="headerTag">
+            Results Viewer · DIP-18
+          </span>
+        </header>
+
+        <main className="container">
+          <ResultsViewer
+            onBack={() => setPage("upload")}
+          />
+        </main>
+      </div>
+    );
+  }
+
+  // DIP-17: Existing upload screen
   return (
     <div className="app">
       <header className="header">
         <div className="logo">▣ MotionScope</div>
-        <span className="headerTag">Frontend + API Client · DIP-17</span>
+        <span className="headerTag">
+          Frontend + API Client · DIP-17
+        </span>
       </header>
 
       <main className="container">
         <h1>New Analysis</h1>
+
         <p className="subtitle">
-          Upload a video, configure detection settings and create an analysis job.
+          Upload a video, configure detection settings and
+          create an analysis job.
         </p>
 
         <form onSubmit={handleSubmit} className="layout">
@@ -104,14 +141,21 @@ function App() {
               }}
             >
               <span className="uploadIcon">↑</span>
+
               <strong>
-                {video ? video.name : "Choose a video or drag it here"}
+                {video
+                  ? video.name
+                  : "Choose a video or drag it here"}
               </strong>
-              <span>MP4, AVI, MOV, MKV · Maximum 500 MB</span>
+
+              <span>
+                MP4, AVI, MOV, MKV · Maximum 500 MB
+              </span>
 
               {video && (
                 <span className="fileSize">
-                  {(video.size / (1024 * 1024)).toFixed(2)} MB selected
+                  {(video.size / (1024 * 1024)).toFixed(2)}
+                  {" "}MB selected
                 </span>
               )}
             </label>
@@ -128,12 +172,16 @@ function App() {
 
             <div className="infoBox">
               <strong>How it works</strong>
+
               <p>
-                This frontend sends the video and configuration to
-                the FastAPI endpoint <code>POST /api/jobs</code>.
+                This frontend sends the video and
+                configuration to the FastAPI endpoint{" "}
+                <code>POST /api/jobs</code>.
               </p>
+
               <p>
-                Actual video processing requires the backend service.
+                Actual video processing requires
+                the backend service.
               </p>
             </div>
           </section>
@@ -141,14 +189,19 @@ function App() {
           <section className="card">
             <h2>2. Analysis Settings</h2>
 
-            <label className="fieldLabel">Object Classes</label>
+            <label className="fieldLabel">
+              Object Classes
+            </label>
+
             <div className="chips">
               {objectClasses.map((className) => (
                 <button
                   type="button"
                   key={className}
                   className={
-                    classes.includes(className) ? "chip active" : "chip"
+                    classes.includes(className)
+                      ? "chip active"
+                      : "chip"
                   }
                   aria-pressed={classes.includes(className)}
                   onClick={() => toggleClass(className)}
@@ -164,9 +217,13 @@ function App() {
               </p>
             )}
 
-            <label className="fieldLabel" htmlFor="confidence">
+            <label
+              className="fieldLabel"
+              htmlFor="confidence"
+            >
               Confidence Threshold: {confidence.toFixed(2)}
             </label>
+
             <input
               id="confidence"
               type="range"
@@ -178,14 +235,19 @@ function App() {
                 setConfidence(Number(event.target.value))
               }
             />
+
             <div className="rangeHints">
               <span>More detections</span>
               <span>Higher confidence</span>
             </div>
 
-            <label className="fieldLabel" htmlFor="motion">
+            <label
+              className="fieldLabel"
+              htmlFor="motion"
+            >
               Moving Threshold: {motionThreshold} px
             </label>
+
             <input
               id="motion"
               type="range"
@@ -198,40 +260,67 @@ function App() {
               }
             />
 
-            <label className="fieldLabel" htmlFor="tracker">
+            <label
+              className="fieldLabel"
+              htmlFor="tracker"
+            >
               Tracker
             </label>
+
             <select
               id="tracker"
               value={tracker}
-              onChange={(event) => setTracker(event.target.value)}
+              onChange={(event) =>
+                setTracker(event.target.value)
+              }
             >
-              <option value="bytetrack">ByteTrack (recommended)</option>
-              <option value="botsort">BoT-SORT</option>
+              <option value="bytetrack">
+                ByteTrack (recommended)
+              </option>
+
+              <option value="botsort">
+                BoT-SORT
+              </option>
             </select>
 
             <button
               type="submit"
               className="primaryButton"
-              disabled={!video || classes.length === 0 || loading}
+              disabled={
+                !video ||
+                classes.length === 0 ||
+                loading
+              }
             >
-              {loading ? "Sending to API..." : "Start Analysis"}
+              {loading
+                ? "Sending to API..."
+                : "Start Analysis"}
             </button>
           </section>
         </form>
 
         {error && (
-          <div className="message errorMessage" role="alert">
+          <div
+            className="message errorMessage"
+            role="alert"
+          >
             <strong>Request failed</strong>
             <p>{error}</p>
           </div>
         )}
 
         {job && (
-          <div className="message successMessage" role="status">
-            <strong>Analysis job created successfully</strong>
+          <div
+            className="message successMessage"
+            role="status"
+          >
+            <strong>
+              Analysis job created successfully
+            </strong>
+
             <p>Job ID: {job.id}</p>
             <p>Status: {job.status}</p>
+
             <p>
               Progress:{" "}
               {typeof job.progress === "number"
@@ -241,8 +330,20 @@ function App() {
           </div>
         )}
 
+        {/* DIP-18: Navigation to Results Viewer */}
+        <div className="viewerNavigation">
+          <button
+            type="button"
+            className="primaryButton"
+            onClick={() => setPage("results")}
+          >
+            Open Results Viewer →
+          </button>
+        </div>
+
         <p className="footerNote">
-          MotionScope Diploma Project · Frontend Skeleton · DIP-17
+          MotionScope Diploma Project · Frontend
+          Skeleton & Results Viewer
         </p>
       </main>
     </div>
