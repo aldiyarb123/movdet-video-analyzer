@@ -66,7 +66,18 @@ Build and evaluate a web application that automatically detects, tracks and extr
 
 **Out of scope**
 - Face or person identification. Multi-camera re-identification. Moving-camera compensation. Model training from scratch. Multi-tenant cloud hosting.
+## MVP scope decisions
 
+The following decisions make the first version of MotionScope feasible and testable within the diploma project timeframe.
+
+| Area | MVP decision | Reason |
+|---|---|---|
+| Video input | The user uploads a recorded video file. | It allows the team to focus on analysis quality before adding live-stream complexity. |
+| Camera conditions | The MVP assumes a static camera. | Moving-camera compensation requires a separate stabilization approach and is outside the first release. |
+| Moving-object rule | An object is treated as moving when its tracked position changes beyond a configurable threshold during a defined time window. | This makes the decision explainable and measurable during evaluation. |
+| Processing location | Video processing and storage run locally. | This reduces privacy risks and avoids dependence on paid cloud video services. |
+| User result | The system provides overlays, object tracks, cropped images, short clips, and JSON/CSV export. | Users can inspect results visually and use structured data in later analysis. |
+| Excluded features | Face identification, multi-camera re-identification, model training from scratch, RTSP streams, and cloud multi-tenant hosting are not included in the MVP. | These features would substantially increase technical scope and evaluation effort. |
 ## Engineering complexity (for committee evaluation)
 
 - Asynchronous long-running processing with job queue, progress reporting and failure handling.
