@@ -24,6 +24,6 @@ Legend: ✅ drafted and ready for team review · 🟡 drafted, needs team input 
 | README completed | ✅ | Insert real links |
 | Each student uses own account | ❌ | Each member commits their own parts |
 | Progressive commits, branches, PRs with review | ❌ | Follow [CONTRIBUTING.md](../CONTRIBUTING.md); commit documents in separate PRs |
-| YouTrack tasks linked to branches/commits | ❌ | Create tasks DIP-1…; add IDs to branches and commits |
+| YouTrack tasks linked to branches/commits | ❌ | Tasks DIP-2…DIP-23 exist in YouTrack; add IDs to branches and commits |
 | Tag `pre-defense-1` | ❌ | After merging to `main` |
 | Committee access | ❌ | Invite before the pre-defense |

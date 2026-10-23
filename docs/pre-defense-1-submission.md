@@ -2,9 +2,9 @@
 
 | Field | Value |
 |---|---|
-| Repository | `<REPO_URL>` |
+| Repository | `https://github.com/aldiyarb123/movdet-video-analyzer` |
 | Tag | `pre-defense-1` |
-| YouTrack | `<YOUTRACK_URL>` |
+| YouTrack | `https://movdet-video-analyzer.youtrack.cloud/projects/DIP` |
 | Date | 24 October 2026 |
 
 ## Summary of completed work
@@ -29,7 +29,7 @@
 
 ## Outstanding tasks
 
-See the backlog in [10-project-management-and-risks.md](10-project-management-and-risks.md) (DIP-4, DIP-10, DIP-12 onward).
+See the backlog in [10-project-management-and-risks.md](10-project-management-and-risks.md) (DIP-5, DIP-11, DIP-13 onward).
 
 ## Before tagging
 
