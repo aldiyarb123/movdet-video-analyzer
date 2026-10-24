@@ -1,0 +1,34 @@
+sequenceDiagram
+    autonumber
+    actor U as User
+    participant FE as Frontend
+    participant API as Backend API (planned)
+    participant Q as Redis queue (planned)
+    participant W as Vision worker (planned)
+    participant S as PostgreSQL + file storage (planned)
+
+    U->>FE: choose video, classes, thresholds
+    FE->>API: POST /api/jobs (video + settings)
+    API->>API: validate type, size, settings
+    API->>S: save video, create job (queued)
+    API->>Q: enqueue job id
+    API-->>FE: 201 {id, status: queued}
+    FE->>API: GET /api/jobs/{id}/events (SSE)
+    Q->>W: job id
+    W->>S: read video
+    loop every frame
+        W->>W: detect, track, motion filter
+        W->>Q: progress
+        Q-->>API: progress
+        API-->>FE: event {progress}
+    end
+    W->>S: save tracks, crops, clips
+    W->>Q: status done
+    API-->>FE: event {status: done}
+    FE->>API: GET /api/jobs/{id}/tracks
+    API->>S: read tracks
+    API-->>FE: tracks with boxes
+    U->>FE: open results, export
+    FE->>API: GET /api/jobs/{id}/report.json
+    API-->>FE: report (schema 1.0)
+    Note over FE: Today the frontend talks to mock-api.cjs and shows demo overlays

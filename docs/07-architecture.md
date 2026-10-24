@@ -1,12 +1,30 @@
 # 7. Architecture and Diagrams
 
-Diagrams (editable Graphviz sources in `diagrams/src/`, exports in `diagrams/export/`):
+Diagrams (editable sources in `diagrams/src/`, exports in `diagrams/export/`):
 
-1. System context: [SVG](../diagrams/export/01-system-context.svg) · [PNG](../diagrams/export/01-system-context.png)
-2. Use case: [SVG](../diagrams/export/02-use-case.svg) · [PNG](../diagrams/export/02-use-case.png)
-3. Component (draft): [SVG](../diagrams/export/03-component-draft.svg) · [PNG](../diagrams/export/03-component-draft.png)
+| # | Diagram | Source | Export |
+|---|---|---|---|
+| 1 | System context | [01-system-context.dot](../diagrams/src/01-system-context.dot) | [SVG](../diagrams/export/01-system-context.svg) · [PNG](../diagrams/export/01-system-context.png) |
+| 2 | Use case | [02-use-case.dot](../diagrams/src/02-use-case.dot) | [SVG](../diagrams/export/02-use-case.svg) · [PNG](../diagrams/export/02-use-case.png) |
+| 3 | Components (solid = built, dashed = planned) | [03-component.dot](../diagrams/src/03-component.dot) | [SVG](../diagrams/export/03-component.svg) · [PNG](../diagrams/export/03-component.png) |
+| 4 | Job sequence (upload to export) | [04-job-sequence.mmd](../diagrams/src/04-job-sequence.mmd) | [SVG](../diagrams/export/04-job-sequence.svg) · [PNG](../diagrams/export/04-job-sequence.png) |
+| 5 | Deployment (docker compose, planned) | [05-deployment.dot](../diagrams/src/05-deployment.dot) | [SVG](../diagrams/export/05-deployment.svg) · [PNG](../diagrams/export/05-deployment.png) |
 
-Regenerate: `dot -Tsvg diagrams/src/03-component-draft.dot -o diagrams/export/03-component-draft.svg`
+Regenerate: `dot -Tsvg diagrams/src/03-component.dot -o diagrams/export/03-component.svg` (Graphviz) and `mmdc -i diagrams/src/04-job-sequence.mmd -o diagrams/export/04-job-sequence.svg` (Mermaid CLI).
+
+## 7.0 Implementation status (24 Oct 2026)
+
+| Part | Status | Where |
+|---|---|---|
+| Frontend: upload and settings, progress display, results viewer with demo overlays | Built | `frontend/` |
+| Mock API for upload tests | Built | `frontend/mock-api.cjs` |
+| JSON and CSV export with schema | Built | `src/reporting/export.py`, `docs/schemas/export-report.schema.json` |
+| Baseline B0 (OpenCV MOG2 + centroid tracker) | Built | `src/vision/baseline_mog2.py` |
+| CDnet loader and metrics CLI | Built | `src/data/cdnet_loader.py`, `src/evaluation/cdnet_cli.py` |
+| CI (pytest on pull requests) | Built | `.github/workflows/tests.yml` |
+| FastAPI backend, Redis queue, vision worker (YOLO, ByteTrack), PostgreSQL, SSE, docker compose | Planned | tasks DIP-14, DIP-15, DIP-16, DIP-23 |
+
+The export report in code uses times in seconds (`first_time_s`, `last_time_s`); the track example in 7.5 uses frame numbers. The report schema is the binding contract for exports; the API track response will be fixed in the OpenAPI file.
 
 ## 7.1 Architectural overview
 
