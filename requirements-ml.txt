@@ -1,0 +1,6 @@
+# Detector + tracker (DIP-15, ADR-0001). Large: installs PyTorch.
+# CPU-only PyTorch (smaller):  pip install torch torchvision --index-url https://download.pytorch.org/whl/cpu
+# then:                        pip install -r requirements-ml.txt
+# Licence: Ultralytics is AGPL-3.0 (risk R1, ADR-0001).
+ultralytics>=8.3,<9
+lap>=0.5.12   # needed by the ByteTrack/BoT-SORT trackers; avoids a runtime auto-install
