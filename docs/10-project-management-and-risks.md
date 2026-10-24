@@ -65,7 +65,7 @@ Each task needs: owner, expected outcome, acceptance criteria, deadline (deadlin
 
 | ID | Risk | Likelihood | Impact | Mitigation | Owner |
 |---|---|---|---|---|---|
-| R1 | Detector licence conflicts with intended use (Ultralytics terms to verify) | Medium | High | Read licence now; fallback RF-DETR; record in ADR | Aldiyar |
+| R1 | Detector licence conflicts with intended use (Ultralytics is AGPL-3.0, verified) | Medium | High | Read licence now; fallback RF-DETR; record in ADR | Aldiyar |
 | R2 | No GPU, CPU too slow for targets | Medium | High | Smallest model, frame skipping, document measured limits, adjust NFR-01 | Aldiyar |
 | R3 | Poor accuracy on small, distant or occluded objects | High | Medium | Tune thresholds, report limitations honestly, own test videos | Alikhan |
 | R4 | Privacy of video of people | Medium | High | Only consented or public data; local processing; no data in repo | All |

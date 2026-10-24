@@ -12,5 +12,5 @@ YOLO family via Ultralytics as detector; ByteTrack as default tracker (BoT-SORT 
 ## Consequences
 + Fast integration, tracker support built in, strong detection under lighting change.
 + ByteTrack needs no appearance model.
-− Ultralytics licence terms must be checked before the final release (risk R1); fallback RF-DETR.
+− Ultralytics is licensed AGPL-3.0 (verified on package metadata, 24 Oct 2026): our code must be handled under AGPL terms or a commercial licence is needed. Decide consciously with the supervisor before the final release (risk R1); fallback RF-DETR.
 − Tracking quality depends on detector quality; must be tuned and measured.

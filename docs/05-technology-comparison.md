@@ -12,7 +12,7 @@ Score = Σ(weight × score). Maximum is 5 × Σweights.
 | Robust to lighting / dynamic background | 3 | 2 | 4 | 4 |
 | Speed on modest hardware | 2 | 5 | 4 | 3 |
 | Setup effort and ecosystem | 2 | 5 | 5 | 3 |
-| Licence and cost *(verify)* | 2 | 5 | 2 | 4 |
+| Licence and cost (YOLO/Ultralytics: AGPL-3.0 verified; RF-DETR *to verify*) | 2 | 5 | 2 | 4 |
 | **Total / 60** | | **39** | **49** | **47** |
 
 **Decision (proposed):** YOLO family as the main detector; MOG2 kept as the **baseline** for evaluation. Licence is the weak point of YOLO (see risk R1): confirm terms; RF-DETR is the fallback.
