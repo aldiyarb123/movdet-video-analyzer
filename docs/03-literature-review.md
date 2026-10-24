@@ -24,7 +24,7 @@ YOLO reframes detection as a single regression problem and predicts boxes and cl
 
 The dominant paradigm is tracking-by-detection. SORT [L11] combines a Kalman filter for motion prediction with the Hungarian algorithm for association and reports an update rate of 260 Hz; its authors argue that adding re-identification adds overhead that limits real-time use. DeepSORT [L12] adds a deep appearance metric learned offline on a person re-identification dataset and reports a 45% reduction in identity switches. ByteTrack [L13] associates almost every detection box, including low-score ones, instead of discarding them; the paper reports 80.3 MOTA, 77.3 IDF1 and 63.1 HOTA on MOT17 at 30 FPS on one V100 GPU, and an IDF1 gain of 1 to 10 points when applied to nine other trackers.
 
-A comparison on SoccerNet-Tracking [L14] shows that detection quality dominates: with ground-truth detections DeepSORT and ByteTrack reach HOTA 69.6 and 71.5, but with real detections the values fall to 36.7 and 47.2. Practical guidance published in October 2026 [G5] suggests SORT for simple scenes, DeepSORT when crowded objects cross, ByteTrack for blurred, partly hidden or low-confidence detections, and OC-SORT for sudden direction changes. Ultralytics supports BoT-SORT (default) and ByteTrack out of the box [G1].
+A comparison on SoccerNet-Tracking [L14] shows that detection quality dominates: with ground-truth detections DeepSORT and ByteTrack reach HOTA 69.6 and 71.5, but with real detections the values fall to 36.7 and 47.2. Practical guidance published in October 2026 [G5] suggests SORT for simple scenes, DeepSORT when crowded objects cross, ByteTrack for blurred, partly hidden or low-confidence detections, and OC-SORT for sudden direction changes. Ultralytics supports BoT-SORT and ByteTrack out of the box [G1]; the package version 8.4.184 checked on 24 Oct 2026 also ships OC-SORT and other trackers and uses a different default tracker than older documentation (see [04](04-existing-systems-comparison.md)).
 
 **Take-away:** ByteTrack is a strong default without an appearance model. A tracker cannot repair poor detections, so detector choice and evaluation on our own footage matter.
 
@@ -67,7 +67,7 @@ Grey sources (documentation and practice, not scientific publications):
 
 | ID | Source | Use |
 |---|---|---|
-| G1 | Ultralytics docs, *Multi-Object Tracking with Ultralytics YOLO* (docs.ultralytics.com/modes/track) | BoT-SORT default, ByteTrack option, API |
+| G1 | Ultralytics docs, *Multi-Object Tracking with Ultralytics YOLO* (docs.ultralytics.com/modes/track) | Supported trackers, tracker config, API (default tracker differs by version, see doc 04) |
 | G2 | Roboflow *Supervision* documentation | Detections, tracking, zones |
 | G3 | Frigate NVR repository and documentation | Existing system comparison |
 | G4 | Google Cloud Video Intelligence API pricing | Existing system comparison |
