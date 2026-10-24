@@ -1,0 +1,26 @@
+// Deployment diagram (planned docker compose). Render: dot -Tsvg 05-deployment.dot -o ../export/05-deployment.svg
+digraph deploy {
+  graph [rankdir=TB, fontname="Helvetica", fontsize=14, labelloc=t, pad=0.4, nodesep=0.5, ranksep=0.7,
+         label="Deployment Diagram: one machine, docker compose (planned, DIP-23)", bgcolor="white", compound=true];
+  node  [fontname="Helvetica", fontsize=11, shape=box, style="filled,rounded", penwidth=1.2];
+  edge  [fontname="Helvetica", fontsize=9, color="#475569", fontcolor="#475569"];
+
+  browser [label="User's browser", fillcolor="#e0f2fe", color="#0369a1"];
+
+  subgraph cluster_host {
+    label="Host machine (laptop or server, no external calls during analysis)"; style="rounded,filled"; fillcolor="#f8fafc"; color="#64748b"; fontcolor="#334155";
+    web    [label="web\nVite build served as static files\nport 5173 / 80", fillcolor="#f0f9ff", color="#0369a1"];
+    api    [label="api\nFastAPI (uvicorn)\nport 8000", fillcolor="#eff6ff", color="#1d4ed8"];
+    worker [label="worker\nRQ worker + Ultralytics YOLO\n(CPU, optional GPU)", fillcolor="#f0fdf4", color="#15803d"];
+    redis  [label="redis\njob queue + progress", shape=cylinder, fillcolor="#fee2e2", color="#b91c1c"];
+    pg     [label="postgres\nmetadata", shape=cylinder, fillcolor="#f1f5f9", color="#64748b"];
+    vol    [label="volume ./data\nvideos, crops, clips", shape=cylinder, fillcolor="#f1f5f9", color="#64748b"];
+    env    [label=".env\nsettings and secrets\n(not committed)", shape=note, fillcolor="#fefce8", color="#a16207"];
+  }
+
+  browser -> web   [label="HTTP"];
+  browser -> api   [label="REST + SSE"];
+  api -> redis;  api -> pg;  api -> vol;
+  worker -> redis; worker -> pg; worker -> vol;
+  env -> api [style=dotted]; env -> worker [style=dotted];
+}

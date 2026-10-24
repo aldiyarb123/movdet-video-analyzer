@@ -1,0 +1,80 @@
+// Component diagram. Render: dot -Tsvg 03-component.dot -o ../export/03-component.svg
+// Solid thick border = exists on main (24 Oct 2026). Dashed = planned.
+digraph components {
+  graph [rankdir=LR, fontname="Helvetica", fontsize=14, labelloc=t, pad=0.4, nodesep=0.4, ranksep=0.9,
+         label="Component Diagram: MotionScope (solid = built, dashed = planned)", bgcolor="white", compound=true];
+  node  [fontname="Helvetica", fontsize=11, shape=box, style="filled,rounded,dashed", penwidth=1.1];
+  edge  [fontname="Helvetica", fontsize=9, color="#475569", fontcolor="#475569"];
+
+  user [label="Browser", shape=box, style=filled, fillcolor="#e0f2fe", color="#0369a1"];
+
+  subgraph cluster_fe {
+    label="Frontend (React + TypeScript + Vite)  [frontend/]"; style="rounded,filled"; fillcolor="#f0f9ff"; color="#0369a1"; fontcolor="#0369a1";
+    fe_up   [label="Upload + settings view\nApp.tsx", fillcolor="white", color="#0369a1", style="filled,rounded", penwidth=2.4];
+    fe_view [label="Results viewer\n(video + overlay)\nResultsViewer.tsx", fillcolor="white", color="#0369a1", style="filled,rounded", penwidth=2.4];
+    fe_hist [label="History view", fillcolor="white", color="#0369a1"];
+    fe_api  [label="API client\napi/jobs.ts\n(SSE listener planned)", fillcolor="white", color="#0369a1", style="filled,rounded", penwidth=2.4];
+  }
+
+  mock [label="Mock API\nmock-api.cjs\n(upload test)", fillcolor="#fef9c3", color="#a16207", style="filled,rounded", penwidth=2.4];
+
+  subgraph cluster_be {
+    label="Backend API (FastAPI)"; style="rounded,filled,dashed"; fillcolor="#eff6ff"; color="#1d4ed8"; fontcolor="#1d4ed8";
+    be_up   [label="Upload + validation", fillcolor="white", color="#1d4ed8"];
+    be_jobs [label="Jobs service\n(create, status, cancel)", fillcolor="white", color="#1d4ed8"];
+    be_rep  [label="Results + export service", fillcolor="white", color="#1d4ed8"];
+    be_sse  [label="Progress stream (SSE)", fillcolor="white", color="#1d4ed8"];
+  }
+
+  export [label="JSON / CSV export\nsrc/reporting/export.py\n+ export-report.schema.json", fillcolor="#dcfce7", color="#15803d", style="filled,rounded", penwidth=2.4];
+
+  queue [label="Redis\njob queue + progress", shape=cylinder, fillcolor="#fee2e2", color="#b91c1c", style="filled,dashed"];
+
+  subgraph cluster_w {
+    label="Vision worker (Python)"; style="rounded,filled,dashed"; fillcolor="#f0fdf4"; color="#15803d"; fontcolor="#15803d";
+    w_dec  [label="Video decoder", fillcolor="white", color="#15803d"];
+    w_det  [label="Detector\n(YOLO)", fillcolor="white", color="#15803d"];
+    w_trk  [label="Tracker\n(ByteTrack)", fillcolor="white", color="#15803d"];
+    w_mot  [label="Motion filter\n(displacement)", fillcolor="white", color="#15803d"];
+    w_ext  [label="Extractor\n(crops, clips)", fillcolor="white", color="#15803d"];
+  }
+
+  db    [label="PostgreSQL\njobs, tracks, settings", shape=cylinder, fillcolor="#f1f5f9", color="#64748b", style="filled,dashed"];
+  files [label="File storage\nvideos, crops, clips", shape=cylinder, fillcolor="#f1f5f9", color="#64748b", style="filled,dashed"];
+
+  subgraph cluster_ev {
+    label="Evaluation tool (CLI)  [src/]"; style="rounded"; color="#b45309"; fontcolor="#b45309";
+    ev_base [label="Baseline B0\nOpenCV MOG2\nvision/baseline_mog2.py", fillcolor="#fef3c7", color="#b45309", style="filled,rounded", penwidth=2.4];
+    ev_data [label="CDnet loader\ndata/cdnet_loader.py", fillcolor="#fef3c7", color="#b45309", style="filled,rounded", penwidth=2.4];
+    ev_met  [label="Metrics CLI\nevaluation/cdnet_cli.py", fillcolor="#fef3c7", color="#b45309", style="filled,rounded", penwidth=2.4];
+  }
+
+  ci [label="CI\nGitHub Actions: pytest", fillcolor="#ede9fe", color="#6d28d9", style="filled,rounded", penwidth=2.4];
+
+  user -> fe_up; user -> fe_view; user -> fe_hist;
+  fe_up -> fe_api; fe_view -> fe_api; fe_hist -> fe_api;
+  fe_api -> mock    [label="POST /api/jobs\n(today)"];
+  fe_api -> be_up   [label="REST", style=dashed];
+  fe_api -> be_jobs [label="REST", style=dashed];
+  fe_api -> be_rep  [label="REST", style=dashed];
+  be_sse -> fe_api  [label="events", style=dashed];
+
+  be_up   -> files  [style=dashed];
+  be_jobs -> db     [style=dashed];
+  be_jobs -> queue  [label="enqueue", style=dashed];
+  be_rep  -> db     [style=dashed];
+  be_rep  -> files  [style=dashed];
+  be_rep  -> export [label="uses"];
+  queue -> be_sse   [style=dashed, label="progress"];
+
+  queue -> w_dec    [label="job", style=dashed];
+  w_dec -> w_det -> w_trk -> w_mot -> w_ext [style=dashed];
+  w_dec -> files    [dir=back, label="read video", style=dashed];
+  w_ext -> files    [label="write results", style=dashed];
+  w_ext -> db       [label="write tracks", style=dashed];
+  w_ext -> queue    [label="progress", style=dashed];
+
+  ev_data -> ev_met; ev_base -> ev_met;
+  w_mot -> ev_met   [style=dashed, label="system output"];
+  ci -> ev_met      [label="runs tests", style=dotted];
+}
