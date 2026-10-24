@@ -1,6 +1,6 @@
 # 3. Literature Review
 
-> Sources were located through web search in October 2026. Metadata not visible in the search results (marked ⚠) must be checked against the publisher page before the final citation list is frozen. Numbers quoted below are taken from the cited abstracts or pages.
+> Sources were located through web search in October 2026. Metadata of L2, L4, L10 and L14, which was incomplete in search results, was checked against the publisher, arXiv and OpenAlex records on 24 Oct 2026 (see [evidence/dip-4-metadata-check.md](evidence/dip-4-metadata-check.md)). Numbers quoted below are taken from the cited abstracts or pages.
 
 ## 3.1 Scope of the review
 
@@ -47,19 +47,19 @@ CDnet 2014 [L15] is a pixel-annotated change-detection benchmark (53 videos, 11 
 | ID | Source | Year | Type | Topic | Main contribution used | Limitation / relevance |
 |---|---|---|---|---|---|---|
 | L1 | Zivkovic, *Improved adaptive Gaussian mixture model for background subtraction*, ICPR | 2004 | Conference (foundational) | Background subtraction | Algorithm behind OpenCV MOG2 (baseline) | Class-agnostic; old; sensitive to dynamic scenes |
-| L2 | Sobral & Vacavant ⚠, *A comprehensive review of background subtraction algorithms evaluated with synthetic and real videos*, Computer Vision and Image Understanding | 2014 | Journal | BS review | Compares 29 methods on BMC for robustness and CPU/memory | Pre-deep-learning |
+| L2 | Sobral & Vacavant, *A comprehensive review of background subtraction algorithms evaluated with synthetic and real videos*, Computer Vision and Image Understanding 122, pp. 4–21, doi:10.1016/j.cviu.2013.12.005 | 2014 | Journal | BS review | Compares 29 methods on BMC for robustness and CPU/memory | Pre-deep-learning |
 | L3 | Kumar & Yadav, *Segmentation of Moving Objects using Background Subtraction Method in Complex Environments*, Radioengineering 25(2) | 2016 | Journal | BS in complex scenes | Lists failure conditions (water, curtains, illumination) | Not real-time per its own discussion of MRF methods |
-| L4 | Chapel & Bouwmans ⚠, *Moving Objects Detection with a Moving Camera: A Comprehensive Review*, arXiv 2001.05238 (Computer Science Review) | 2020 | Survey | Moving camera | Taxonomy; shows static-camera focus of earlier surveys | Defines out-of-scope case for MVP |
+| L4 | Chapel & Bouwmans, *Moving Objects Detection with a Moving Camera: A Comprehensive Review*, Computer Science Review 38, 100310, doi:10.1016/j.cosrev.2020.100310 (arXiv 2001.05238) | 2020 | Survey | Moving camera | Taxonomy; shows static-camera focus of earlier surveys | Defines out-of-scope case for MVP |
 | L5 | Yao et al., *Video Object Segmentation and Tracking: A Survey*, arXiv 1904.09172 | 2019/2020 | Survey | VOS and tracking | Classic BS pipeline and segmentation-based tracking | Segmentation focus, wider than our scope |
 | L6 | Terven & Cordova-Esparza, *A Comprehensive Review of YOLO Architectures in Computer Vision: From YOLOv1 to YOLOv8 and YOLO-NAS*, arXiv 2304.00501 (Machine Learning and Knowledge Extraction) | 2023 | Survey | YOLO | Architecture evolution, single-pass detection | Ends at v8 |
 | L7 | Kotthapalli et al., *YOLOv1 to YOLOv11: A Comprehensive Survey of Real-Time Object Detection Innovations and Challenges*, arXiv 2508.02067 | 2025 | Survey (preprint) | YOLO | Small-object and localisation limits; deployment notes | Preprint |
 | L8 | Ramos & Sappa, *A Decade of You Only Look Once (YOLO) for Object Detection: A Review*, arXiv 2504.18586 | 2025 | Survey (preprint) | YOLO | Evolution to v13, ethics, constraints | Preprint |
 | L9 | Zulfqar et al., *A comprehensive overview of deep learning models for object detection from videos/images*, arXiv 2601.14677 | 2026 | Survey (preprint) | Video detection | Current effectiveness of semantic detection | Preprint |
-| L10 | *Object Detection in Traffic Videos: A Survey*, vol. 24(7) ⚠ authors and journal to confirm | 2023 | Journal survey | Traffic video | Foreground detection and instance segmentation for traffic | Domain-specific |
+| L10 | Ghahremannezhad, Shi & Liu, *Object Detection in Traffic Videos: A Survey*, IEEE Transactions on Intelligent Transportation Systems 24(7), pp. 6780–6799, doi:10.1109/TITS.2023.3258683 | 2023 | Journal survey | Traffic video | Foreground detection and instance segmentation for traffic | Domain-specific |
 | L11 | Bewley et al., *Simple online and realtime tracking*, ICIP, doi:10.1109/ICIP.2016.7533003 | 2016 | Conference (foundational) | MOT | Kalman + Hungarian, 260 Hz; detector quality matters | No appearance, weak on occlusion |
 | L12 | Wojke et al., *Simple Online and Realtime Tracking with a Deep Association Metric*, ICIP, doi:10.1109/ICIP.2017.8296962 | 2017 | Conference (foundational) | MOT | Appearance metric, 45% fewer ID switches | Needs re-ID model; heavier |
 | L13 | Zhang et al., *ByteTrack: Multi-Object Tracking by Associating Every Detection Box*, ECCV | 2022 | Conference | MOT | Associates low-score boxes; MOT17 80.3 MOTA, 30 FPS | Depends on detector; no appearance cue |
-| L14 | *SoccerNet-Tracking: Multiple Object Tracking Dataset and Benchmark in Soccer Videos*, arXiv 2204.06918 ⚠ authors | 2022 | Benchmark paper | MOT evaluation | Shows DeepSORT/FairMOT/ByteTrack gap with and without GT detections | Sports domain |
+| L14 | Cioppa et al., *SoccerNet-Tracking: Multiple Object Tracking Dataset and Benchmark in Soccer Videos*, CVPR Workshops 2022, doi:10.1109/CVPRW56347.2022.00393 (arXiv 2204.06918) | 2022 | Benchmark paper (conference workshop) | MOT evaluation | Shows DeepSORT/FairMOT/ByteTrack gap with and without GT detections | Sports domain |
 | L15 | Wang et al., *CDnet 2014: An Expanded Change Detection Benchmark Dataset*, CVPR Workshops, doi:10.1109/CVPRW.2014.126 | 2014 | Conference (dataset) | Evaluation | Dataset, categories, metrics for change detection | Fixed-camera videos, older |
 | L16 | Dendorfer et al., *MOT20: A benchmark for multi object tracking in crowded scenes*, arXiv 2003.09003 | 2020 | Benchmark paper | Evaluation | Crowded-scene tracking benchmark, HOTA/MOTA/IDF1 context | Pedestrian only |
 
@@ -76,11 +76,11 @@ Grey sources (documentation and practice, not scientific publications):
 ## 3.8 Compliance with the committee requirement
 
 - **At least 12 meaningfully used sources:** 16 academic + 5 documentation sources, each used above.
-- **At least 8 scientific publications:** 16 listed (journal, conference, survey, benchmark). Four are arXiv preprints (L7, L8, L9, L14); the team should cite published versions where they exist.
+- **At least 8 scientific publications:** 16 listed (journal, conference, survey, benchmark). Three are arXiv preprints (L7, L8, L9); L4 and L14 have published versions, which are cited. The team should cite published versions of L7–L9 where they exist.
 - **Recent core (last five years):** L6, L7, L8, L9, L10, L13, L14 are from 2022–2026; L16 is from 2020. Foundational works (L1, L11, L12, L15) are kept deliberately. **Recommended:** add 3–4 more recent (2021–2026) peer-reviewed papers, for example on transformer-based real-time detectors and on deep-learning motion detection, so the recent core is stronger.
 
 ## 3.9 To verify before submission
 
-- ⚠ Confirm authors and venue for L2, L4, L10, L14 on the publisher or arXiv page.
+- Done 24 Oct 2026: authors, venue and DOI confirmed for L2, L4, L10, L14.
 - Replace preprint citations with published versions where available.
 - Each member should read and annotate their share of sources (suggested split: L1–L5 Alikhan, L6–L10 Asylkhan, L11–L16 Aldiyar) and be ready to explain them at the defense.
