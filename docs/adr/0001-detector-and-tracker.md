@@ -1,6 +1,6 @@
 # ADR-0001: Detector and tracker
 
-- **Status:** Proposed (team to confirm)
+- **Status:** Accepted when the DIP-6 pull request is merged (team approval)
 - **Date:** 2026-10-23
 
 ## Context
@@ -14,3 +14,4 @@ YOLO family via Ultralytics as detector; ByteTrack as default tracker (BoT-SORT 
 + ByteTrack needs no appearance model.
 − Ultralytics is licensed AGPL-3.0 (verified on package metadata, 24 Oct 2026): our code must be handled under AGPL terms or a commercial licence is needed. Decide consciously with the supervisor before the final release (risk R1); fallback RF-DETR.
 − Tracking quality depends on detector quality; must be tuned and measured.
+- `rfdetr` 1.11.2 metadata: Apache 2.0 (fallback). Model-weight terms not checked.

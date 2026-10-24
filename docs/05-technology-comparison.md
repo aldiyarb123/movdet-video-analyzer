@@ -1,6 +1,6 @@
 # 5. Technology Comparison
 
-Six key technical decisions, each with 2–3 alternatives. Scores are 1 (poor) to 5 (excellent), weights 1–3. **Scores are the author's draft judgement from the cited sources and general engineering knowledge; the team must review them, adjust weights to its real skills and constraints, and record the final choice in an ADR.** Items marked *(verify)* need a check or a quick experiment.
+Six key technical decisions, each with 2–3 alternatives. Scores are 1 (poor) to 5 (excellent), weights 1–3. **Scores are the author's draft judgement from the cited sources and general engineering knowledge; the team must review them, adjust weights to its real skills and constraints, and record the final choice in an ADR.** Facts were checked on 24 Oct 2026 (package metadata, documentation); the remaining judgement scores are reviewed by the team through the pull request (see the review record at the end).
 
 Score = Σ(weight × score). Maximum is 5 × Σweights.
 
@@ -12,10 +12,10 @@ Score = Σ(weight × score). Maximum is 5 × Σweights.
 | Robust to lighting / dynamic background | 3 | 2 | 4 | 4 |
 | Speed on modest hardware | 2 | 5 | 4 | 3 |
 | Setup effort and ecosystem | 2 | 5 | 5 | 3 |
-| Licence and cost (YOLO/Ultralytics: AGPL-3.0 verified; RF-DETR *to verify*) | 2 | 5 | 2 | 4 |
+| Licence and cost (Ultralytics AGPL-3.0; `rfdetr` package Apache 2.0, model-weight terms not checked) | 2 | 5 | 2 | 4 |
 | **Total / 60** | | **39** | **49** | **47** |
 
-**Decision (proposed):** YOLO family as the main detector; MOG2 kept as the **baseline** for evaluation. Licence is the weak point of YOLO (see risk R1): confirm terms; RF-DETR is the fallback.
+**Decision (proposed):** YOLO family as the main detector; MOG2 kept as the **baseline** for evaluation. Licence is the weak point of YOLO (see risk R1): Ultralytics is AGPL-3.0, while the `rfdetr` 1.11.2 package metadata states Apache 2.0, so RF-DETR is the fallback. The licence of individual RF-DETR model weights was not checked.
 Evidence: [L1], [L6]–[L8], [G1].
 
 ## D2. Tracker
@@ -40,7 +40,7 @@ Evidence: [L1], [L6]–[L8], [G1].
 | Learning curve and boilerplate | 2 | 4 | 3 | 4 |
 | **Total / 45** | | **43** | **33** | **33** |
 
-**Decision (proposed):** FastAPI (typed models and auto-generated API docs support FR-16 directly). *(verify against the backend owner's experience.)*
+**Decision (proposed):** FastAPI (typed models and auto-generated API docs support FR-16 directly). Package licences checked: `fastapi` 0.162.0 MIT, `redis` client 8.1.0 MIT, `rq` 2.12.0 BSD-2-Clause. The backend owner confirms the experience fit in the pull request review.
 
 ## D4. Data storage
 
@@ -64,7 +64,7 @@ Evidence: [L1], [L6]–[L8], [G1].
 | Testability | 2 | 4 | 4 | 3 |
 | **Total / 45** | | **37** | **30** | **30** |
 
-**Decision (proposed):** REST API, Redis-backed worker queue, progress via Server-Sent Events. Browser access to gRPC needs a proxy, which adds complexity *(verify)*.
+**Decision (proposed):** REST API, Redis-backed worker queue, progress via Server-Sent Events. Browsers cannot call gRPC servers directly; gRPC-Web needs a translating proxy such as Envoy between browser and backend [oneuptime guide, 2026](https://oneuptime.com/blog/post/2026-01-24-grpc-web-browser-clients/markdown), which adds deployment complexity. SSE works through plain HTTP.
 
 ## D6. Frontend
 
@@ -76,7 +76,7 @@ Evidence: [L1], [L6]–[L8], [G1].
 | Build tooling | 2 | 5 | 5 | 5 |
 | **Total / 50** | | **47** | **39** | **31** |
 
-**Decision (proposed):** React + TypeScript. The familiarity row is a placeholder: Asylkhan should rescore it.
+**Decision (proposed):** React + TypeScript. The familiarity row is a draft: Asylkhan reviews it in the pull request. Supporting fact: the frontend skeleton in `frontend/` on `main` is already built with React, TypeScript and Vite.
 
 ## Summary of proposed stack
 
@@ -91,3 +91,10 @@ Evidence: [L1], [L6]–[L8], [G1].
 | Frontend | React + TypeScript | Vue 3 |
 
 Each final choice becomes an ADR in [adr/](adr/).
+
+## Review record (tick in the pull request)
+
+- [ ] Aldiyar (backend): D3, D4, D5 scores and choices
+- [ ] Asylkhan (frontend): D6 scores, especially team familiarity
+- [ ] Alikhan (integration, testing): D1, D2 and the check that choices are testable
+- All three accept ADR-0001, ADR-0002, ADR-0003 by approving the pull request.
