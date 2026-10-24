@@ -5,7 +5,18 @@ import cv2
 import numpy as np
 import pytest
 
-from baseline_mog2 import CentroidTracker, Track, is_moving, run, track_displacement
+import json
+
+from baseline_mog2 import (
+    CentroidTracker,
+    Track,
+    is_moving,
+    main,
+    run,
+    track_displacement,
+    window_displacement,
+)
+from benchmark_baseline import benchmark
 
 W, H = 320, 240
 
@@ -85,3 +96,94 @@ def test_static_scene_has_no_moving_tracks(tmp_path):
 def test_missing_file_raises(tmp_path):
     with pytest.raises(ValueError):
         run(tmp_path / "nope.mp4")
+
+
+def make_track(step_px: float, n: int) -> Track:
+    t = Track(id=1)
+    for i in range(n):
+        t.add(i, (round(i * step_px), 50, 20, 20))
+    return t
+
+
+def test_window_criterion_ignores_slow_drift():
+    # 1 px per frame for 100 frames: 99 px overall, but only ~15 px inside a 15-frame window.
+    slow = make_track(1.0, 100)
+    assert is_moving(slow, 25, window_frames=None)
+    assert window_displacement(slow, 15) == pytest.approx(15, abs=1)
+    assert not is_moving(slow, 25, window_frames=15)
+
+
+def test_window_criterion_accepts_fast_motion():
+    fast = make_track(4.0, 20)
+    assert window_displacement(fast, 15) == pytest.approx(60, abs=1)
+    assert is_moving(fast, 25, window_frames=15)
+
+
+def test_window_handles_gaps_in_track():
+    t = Track(id=1)
+    t.add(0, (0, 0, 10, 10))
+    t.add(40, (100, 0, 10, 10))  # far apart in time: outside a 15-frame window
+    assert window_displacement(t, 15) == 0.0
+    assert window_displacement(t, 50) == pytest.approx(100)
+
+
+def test_window_must_be_positive():
+    with pytest.raises(ValueError):
+        window_displacement(make_track(1, 5), 0)
+
+
+def test_run_reports_params_and_progress(tmp_path):
+    video = tmp_path / "moving.avi"
+    make_video(video, n_frames=60, moving=True)
+    seen = []
+    result = run(video, window_frames=15, progress=seen.append)
+    assert result["params"]["window_frames"] == 15
+    assert (result["width"], result["height"]) == (W, H)
+    assert seen[-1] == 1.0 and seen == sorted(seen), "progress must not decrease"
+    for t in result["tracks"]:
+        assert {"id", "class", "boxes", "frames", "moving", "window_displacement_px"} <= t.keys()
+        assert len(t["boxes"]) == len(t["frames"])
+
+
+def test_run_can_be_stopped(tmp_path):
+    video = tmp_path / "moving.avi"
+    make_video(video, n_frames=60, moving=True)
+    calls = {"n": 0}
+
+    def stop() -> bool:
+        calls["n"] += 1
+        return calls["n"] > 10
+
+    assert run(video, should_stop=stop)["frames"] == 10
+
+
+def test_resize_height(tmp_path):
+    video = tmp_path / "moving.avi"
+    make_video(video, n_frames=40, moving=True)
+    result = run(video, resize_height=120)
+    assert (result["width"], result["height"]) == (160, 120)
+
+
+def test_undecodable_file_raises(tmp_path):
+    bad = tmp_path / "bad.mp4"
+    bad.write_bytes(b"not a video")
+    with pytest.raises(ValueError):
+        run(bad)
+
+
+def test_cli_writes_json(tmp_path):
+    video = tmp_path / "moving.avi"
+    out = tmp_path / "out" / "tracks.json"
+    make_video(video, n_frames=90, moving=True)
+    main([str(video), "--out", str(out), "--window-frames", "15"])
+    data = json.loads(out.read_text())
+    assert data["frames"] == 90
+    assert any(t["moving"] for t in data["tracks"])
+
+
+def test_benchmark_reports_speed(tmp_path):
+    video = tmp_path / "moving.avi"
+    make_video(video, n_frames=60, moving=True)
+    b = benchmark(video, repeat=1)
+    assert b["frames"] == 60 and b["processing_fps"] > 0
+    assert b["machine"]["cpu_count"]
