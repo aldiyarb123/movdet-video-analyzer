@@ -4,7 +4,8 @@ This is the comparison method for the evaluation (docs/09-verification-plan.md).
 It has no class labels and no appearance model, by design.
 
 Usage:
-    python src/vision/baseline_mog2.py video.mp4 --out out/tracks.json
+    python src/vision/baseline_mog2.py video.mp4 --out out/tracks.json --window-frames 15
+    python src/vision/benchmark_baseline.py video.mp4 --out docs/evidence/dip-12
 """
 from __future__ import annotations
 
@@ -13,6 +14,7 @@ import json
 import math
 from dataclasses import dataclass, field
 from pathlib import Path
+from typing import Callable
 
 import cv2
 import numpy as np
@@ -51,9 +53,40 @@ def track_displacement(track: Track) -> float:
     return math.hypot(x1 - x0, y1 - y0)
 
 
-def is_moving(track: Track, min_displacement_px: float = 25.0) -> bool:
-    """Motion criterion: the track travelled at least `min_displacement_px`."""
-    return track_displacement(track) >= min_displacement_px
+def window_displacement(track: Track, window_frames: int) -> float:
+    """Largest center displacement between two observations at most `window_frames` apart.
+
+    This is the ADR-0003 criterion: an object is moving if, inside some window of
+    `window_frames` frames, its center travels at least the threshold. A track that is
+    shorter than the window is measured from its first to its last observation.
+    """
+    if window_frames < 1:
+        raise ValueError("window_frames must be >= 1")
+    if len(track.boxes) < 2:
+        return 0.0
+    centers = [box_center(b) for b in track.boxes]
+    best = 0.0
+    j = 0
+    for i, start in enumerate(track.frames):
+        j = max(j, i)
+        while j + 1 < len(track.frames) and track.frames[j + 1] - start <= window_frames:
+            j += 1
+        (x0, y0), (x1, y1) = centers[i], centers[j]
+        best = max(best, math.hypot(x1 - x0, y1 - y0))
+    return best
+
+
+def is_moving(
+    track: Track, min_displacement_px: float = 25.0, window_frames: int | None = None
+) -> bool:
+    """Motion criterion (ADR-0003).
+
+    With `window_frames=None` the whole track is used (first vs last center); otherwise
+    the displacement must happen within `window_frames` frames, so slow drift is ignored.
+    """
+    if window_frames is None:
+        return track_displacement(track) >= min_displacement_px
+    return window_displacement(track, window_frames) >= min_displacement_px
 
 
 class CentroidTracker:
@@ -128,24 +161,48 @@ def run(
     min_area: int = 400,
     max_distance: float = 60.0,
     min_displacement_px: float = 25.0,
+    window_frames: int | None = 15,
+    max_missed: int = 15,
+    resize_height: int | None = None,
+    progress: Callable[[float], None] | None = None,
+    should_stop: Callable[[], bool] | None = None,
 ) -> dict:
+    """Run baseline B0 on a video file and return tracks as a JSON-ready dict.
+
+    `resize_height` scales frames (keeping aspect ratio) before processing; boxes are
+    reported in the processed resolution. `progress` receives a value in [0, 1].
+    """
     cap = cv2.VideoCapture(str(video_path))
     if not cap.isOpened():
         raise ValueError(f"Cannot open video: {video_path}")
     fps = cap.get(cv2.CAP_PROP_FPS) or 0.0
+    total = int(cap.get(cv2.CAP_PROP_FRAME_COUNT)) or 0
     subtractor = cv2.createBackgroundSubtractorMOG2(
         history=history, varThreshold=var_threshold, detectShadows=detect_shadows
     )
-    tracker = CentroidTracker(max_distance=max_distance)
+    tracker = CentroidTracker(max_distance=max_distance, max_missed=max_missed)
     frame_idx = 0
+    width = height = 0
     while True:
+        if should_stop is not None and should_stop():
+            break
         ok, frame = cap.read()
         if not ok:
             break
+        if resize_height and frame.shape[0] != resize_height:
+            scale = resize_height / frame.shape[0]
+            frame = cv2.resize(frame, (round(frame.shape[1] * scale), resize_height))
+        height, width = frame.shape[:2]
         mask = subtractor.apply(frame)
         tracker.update(frame_idx, detect_boxes(mask, min_area))
         frame_idx += 1
+        if progress is not None and total and frame_idx % 25 == 0:
+            progress(min(frame_idx / total, 1.0))
     cap.release()
+    if frame_idx == 0:
+        raise ValueError(f"No frames could be decoded from: {video_path}")
+    if progress is not None:
+        progress(1.0)
 
     tracks = []
     for t in tracker.all_tracks():
@@ -155,24 +212,60 @@ def run(
                 "first_frame": t.frames[0],
                 "last_frame": t.frames[-1],
                 "n_detections": len(t.frames),
+                "class": "object",
                 "displacement_px": round(track_displacement(t), 2),
-                "moving": is_moving(t, min_displacement_px),
+                "window_displacement_px": round(
+                    window_displacement(t, window_frames) if window_frames else track_displacement(t), 2
+                ),
+                "moving": is_moving(t, min_displacement_px, window_frames),
                 "boxes": [list(b) for b in t.boxes],
                 "frames": t.frames,
             }
         )
-    return {"video": str(video_path), "fps": fps, "frames": frame_idx, "tracks": tracks}
+    return {
+        "video": str(video_path),
+        "method": "baseline-b0-mog2",
+        "fps": fps,
+        "frames": frame_idx,
+        "width": width,
+        "height": height,
+        "params": {
+            "history": history,
+            "var_threshold": var_threshold,
+            "detect_shadows": detect_shadows,
+            "min_area": min_area,
+            "max_distance": max_distance,
+            "max_missed": max_missed,
+            "min_displacement_px": min_displacement_px,
+            "window_frames": window_frames,
+        },
+        "tracks": tracks,
+    }
 
 
-def main() -> None:
+def main(argv: list[str] | None = None) -> None:
     parser = argparse.ArgumentParser(description="MOG2 baseline for moving-object analysis")
     parser.add_argument("video")
     parser.add_argument("--out", default="out/tracks.json")
     parser.add_argument("--min-area", type=int, default=400)
     parser.add_argument("--min-displacement", type=float, default=25.0)
-    args = parser.parse_args()
+    parser.add_argument("--window-frames", type=int, default=15, help="0 = whole track")
+    parser.add_argument("--history", type=int, default=500)
+    parser.add_argument("--var-threshold", type=float, default=16.0)
+    parser.add_argument("--max-distance", type=float, default=60.0)
+    parser.add_argument("--resize-height", type=int, default=None)
+    args = parser.parse_args(argv)
 
-    result = run(args.video, min_area=args.min_area, min_displacement_px=args.min_displacement)
+    result = run(
+        args.video,
+        history=args.history,
+        var_threshold=args.var_threshold,
+        min_area=args.min_area,
+        max_distance=args.max_distance,
+        min_displacement_px=args.min_displacement,
+        window_frames=args.window_frames or None,
+        resize_height=args.resize_height,
+    )
     out = Path(args.out)
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(json.dumps(result, indent=2))
