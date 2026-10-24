@@ -150,7 +150,29 @@ python src/vision/baseline_mog2.py path/to/video.mp4 --out out/tracks.json
 pytest -q
 ```
 
-Backend and frontend run instructions will be added when those components become runnable.
+### Whole application with Docker (DIP-23)
+
+Needs only [Docker Desktop](https://www.docker.com/products/docker-desktop/) (Windows, macOS) or Docker Engine with the compose plugin (Linux).
+
+```bash
+git clone https://github.com/aldiyarb123/movdet-video-analyzer.git
+cd movdet-video-analyzer
+docker compose up --build        # first build downloads PyTorch and the model, ~5-10 min
+```
+
+Open http://localhost:8080 (web UI) or http://localhost:8000/docs (API). Stop with `Ctrl+C`; `docker compose down -v` also deletes stored jobs. `MOVDET_PROCESSOR=stub docker compose up` runs the API with the fake analysis.
+
+### Backend and pipeline without Docker
+
+```bash
+pip install -r requirements.txt
+pip install torch torchvision --index-url https://download.pytorch.org/whl/cpu   # optional, CPU-only PyTorch
+pip install -r requirements-ml.txt                                               # YOLO + trackers
+MOVDET_PROCESSOR=pipeline uvicorn src.backend.app:app --reload                   # API on :8000
+cd frontend && npm install && npm run dev                                        # UI on :5173
+```
+
+Command-line tools: `python -m src.vision.pipeline video.mp4 --out out/job1` (full analysis), `python src/vision/detector_tracker.py video.mp4` (tracking only), `python src/vision/benchmark_baseline.py video.mp4` (baseline speed).
 
 ## 11. Workflow
 

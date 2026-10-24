@@ -22,7 +22,11 @@ Regenerate: `dot -Tsvg diagrams/src/03-component.dot -o diagrams/export/03-compo
 | Baseline B0 (OpenCV MOG2 + centroid tracker) | Built | `src/vision/baseline_mog2.py` |
 | CDnet loader and metrics CLI | Built | `src/data/cdnet_loader.py`, `src/evaluation/cdnet_cli.py` |
 | CI (pytest on pull requests) | Built | `.github/workflows/tests.yml` |
-| FastAPI backend, Redis queue, vision worker (YOLO, ByteTrack), PostgreSQL, SSE, docker compose | Planned | tasks DIP-14, DIP-15, DIP-16, DIP-23 |
+| FastAPI backend with jobs, SSE, exports, OpenAPI | Built | `src/backend/`, `docs/api/openapi.json` (DIP-14) |
+| Detector + tracker (YOLO, ByteTrack/BoT-SORT) | Built | `src/vision/detector_tracker.py` (DIP-15) |
+| Motion filter, extractor (crops, clips), pipeline | Built | `src/vision/motion_filter.py`, `extractor.py`, `pipeline.py` (DIP-16) |
+| docker compose (API + web UI) | Built | `docker-compose.yml`, `Dockerfile`, `docker/` (DIP-23) |
+| Redis queue + RQ worker, PostgreSQL | Planned | jobs run in the API process for now (ADR-0002); metadata in `job.json` files |
 
 The export report in code uses times in seconds (`first_time_s`, `last_time_s`); the track example in 7.5 uses frame numbers. The report schema is the binding contract for exports; the API track response will be fixed in the OpenAPI file.
 

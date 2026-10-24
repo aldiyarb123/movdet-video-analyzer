@@ -1,0 +1,36 @@
+# MotionScope: one command to run the whole application (DIP-23, NFR-07).
+#   docker compose up --build      -> open http://localhost:8080
+# Data (uploads, results) is kept in the named volume "movdet-data".
+# ADR-0002: the prototype runs jobs inside the API process; Redis is added here when the
+# RQ worker replaces it.
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: motionscope-api
+    environment:
+      MOVDET_DATA_DIR: /data
+      MOVDET_PROCESSOR: ${MOVDET_PROCESSOR:-pipeline}
+      MOVDET_MAX_UPLOAD_MB: ${MOVDET_MAX_UPLOAD_MB:-2048}
+    volumes:
+      - movdet-data:/data
+    ports:
+      - "127.0.0.1:8000:8000"   # API + OpenAPI docs at http://localhost:8000/docs
+    restart: unless-stopped
+
+  web:
+    build:
+      context: .
+      dockerfile: docker/frontend.Dockerfile
+    image: motionscope-web
+    depends_on:
+      api:
+        condition: service_healthy
+    ports:
+      - "127.0.0.1:8080:80"
+    restart: unless-stopped
+
+volumes:
+  movdet-data:
