@@ -8,7 +8,7 @@
 | | |
 |---|---|
 | **Status** | Pre-defense 1: analysis, design, planning (no full application yet) |
-| **Supervisor** | Shuryn Tutkyshbayeva |
+| **Supervisor** | Shyryn Tutkyshbayeva |
 | **Repository** | `https://github.com/aldiyarb123/movdet-video-analyzer` |
 | **YouTrack** | `https://movdet-video-analyzer.youtrack.cloud/projects/DIP` (project key `DIP`) |
 | **Latest tag** | `pre-defense-1` (to be created at submission, see [docs/pre-defense-1-submission.md](docs/pre-defense-1-submission.md)) |
@@ -57,7 +57,7 @@ Evidence status: [docs/02-evidence-of-relevance.md](docs/02-evidence-of-relevanc
 | Aldiyar Bazarbayev | Backend, video processing, API | `src/backend/`, `src/vision/`, `docs/07-architecture.md` |
 | Alikhan Sekenov | Functional components, integration, testing, documentation | `tests/`, `docs/06-requirements.md`, `docs/09-verification-plan.md`, integration |
 
-Supervisor: **Shuryn Tutkyshbayeva**.
+Supervisor: ** Tutkyshbayeva**.
 
 ## 6. Scope
 
